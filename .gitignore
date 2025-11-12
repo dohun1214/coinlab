@@ -50,3 +50,8 @@ hs_err_pid*
 *.tmp
 *.bak
 *.cache
+
+# Configuration files with sensitive data
+src/main/resources/db.properties
+*.properties
+!*.properties.example

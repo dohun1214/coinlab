@@ -1,0 +1,7 @@
+# Database Configuration Example
+# Copy this file to db.properties and update with your settings
+
+db.driver=com.mysql.cj.jdbc.Driver
+db.url=jdbc:mysql://localhost:3306/coinlab
+db.username=your_username
+db.password=your_password
