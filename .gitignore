@@ -1,0 +1,52 @@
+# Eclipse specific files
+.metadata
+.settings/
+.project
+.classpath
+.factorypath
+.buildpath
+.target
+.tern-project
+
+# Compiled class files
+*.class
+
+# Build directories
+build/
+bin/
+target/
+dist/
+out/
+
+# Web application build outputs
+*.war
+*.ear
+
+# Log files
+*.log
+
+# Tomcat/Server files
+Servers/
+.tomcatplugin
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE temp files
+*.swp
+*.swo
+*~
+.idea/
+*.iml
+
+# Java specific
+*.jar
+!WEB-INF/lib/*.jar
+hs_err_pid*
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
