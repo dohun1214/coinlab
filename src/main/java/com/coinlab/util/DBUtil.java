@@ -39,14 +39,44 @@ public class DBUtil {
 	}
 
 	public static void close(Connection conn, PreparedStatement pstmt) throws SQLException {
-		conn.close();
-		pstmt.close();
+		if (pstmt != null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void close(Connection conn, PreparedStatement pstmt, ResultSet rs) throws SQLException {
-		conn.close();
-		pstmt.close();
-		rs.close();
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (pstmt != null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
