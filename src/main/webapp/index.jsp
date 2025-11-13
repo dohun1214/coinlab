@@ -6,8 +6,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoinLab - 홈</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50">
+	<!-- Header -->
+	<jsp:include page="header.jsp" />
+
 </body>
 </html>
