@@ -17,6 +17,14 @@ public class User {
 	public User() {
 	}
 
+	public User(String username, String password, String email, String nickname, String profileImage) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.nickname = nickname;
+		this.profileImage = profileImage;
+	}
+
 	public User(int userId, String username, String password, String email, String nickname, String profileImage,
 			String role, double initialBalance, Timestamp createdAt, Timestamp lastLogin) {
 		this.userId = userId;

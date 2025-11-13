@@ -210,7 +210,6 @@ public class UserDAO {
 
 	}
 
-	
 	// password 변경
 	public void updatePassword(String username, String password) {
 		String sql = "update users set password = ? where username = ?";
@@ -234,5 +233,67 @@ public class UserDAO {
 		}
 	}
 
+	// 회원 가입
+	public int insertUser(User user) {
+		String sql = "insert into users(username,password,email,nickname,profile_image,role,last_login) values(?,?,?,?,?,?,?)";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user.getUsername());
+			pstmt.setString(2, user.getPassword());
+			pstmt.setString(3, user.getEmail());
+			pstmt.setString(4, user.getNickname());
+			pstmt.setString(5, user.getProfileImage());
+			pstmt.setString(6, "USER");
+			pstmt.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+
+			return pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	// 로그인
+	public User login(String username, String password) {
+		String sql = "select * from users where username = ? and password = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			pstmt.setString(2, password);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
+						rs.getString(6), rs.getString(7), rs.getDouble(8), rs.getTimestamp(9), rs.getTimestamp(10));
+				return user;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
 
 }
