@@ -72,6 +72,12 @@ git clone https://github.com/dohun1214/coinlab.git
 - 프로젝트 우클릭 → `Build Path` → `Configure Build Path`
 - `Libraries` 탭에서 JRE System Library가 JavaSE-21인지 확인
 
+**JSP 파일에 빨간 줄 표시 (HttpServlet 오류):**
+- 실행은 정상적으로 되지만 JSP 파일에 오류 표시가 나타나는 경우
+- `Project` → `Clean...` 선택
+- `CoinLab` 프로젝트 선택 후 `Clean` 클릭
+- Eclipse가 프로젝트를 다시 빌드하면 오류 해결
+
 ## 프로젝트 구조
 ```
 src/main/java/com/coinlab/
