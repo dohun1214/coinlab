@@ -52,6 +52,16 @@ body {
 		<option value="minutes/60">1시간</option>
 		<option value="minutes/240">4시간</option>
 	</select>
+	
+	<span id="high_price" style="color:red"></span>
+	<span id="low_price" style="color:red"></span>
+	<span id="trade_price" style="color:red"></span>
+	<span id="change" style="color:red"></span>
+	<span id="signed_change_rate" style="color:red"></span>
+	<span id="signed_change_price" style="color:red"></span>
+	<span id="acc_trade_volume_24h" style="color:red"></span>
+	<span id="acc_trade_price_24h" style="color:red"></span>
+	
 	<div id="chart"></div>
 
 	<script type="text/javascript" src="js/trade.js"></script>

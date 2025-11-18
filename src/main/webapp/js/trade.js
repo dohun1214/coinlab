@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	// 초기 데이터 로드
 
 	// WebSocket 연결
 	const ws = new WebSocket('ws://localhost:8080/CoinLab/candle');
@@ -60,12 +59,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	};
 
+
+
+
 	let code = document.getElementById('coin-select').value;
 	let type = document.getElementById('type').value;
 	loadInitialData(code, type)
 	document.getElementById('coin-select').addEventListener('change', function() {
 		code = this.value;
 		loadInitialData(code, type)
+		ws2.close()
+		ws2 = new WebSocket('wss://api.upbit.com/websocket/v1')
+
+		ws2.onopen = () => {
+			console.log('ws2 연결 성공')
+			ws2.send(JSON.stringify([
+				{ "ticket": "test" },
+				{ "type": "ticker", "codes": [`${code}`] }
+			]))
+		}
+
+
+		ws2.onmessage = async (event) => {
+			let text = await event.data.text()
+			let data = JSON.parse(text)
+
+			document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
+			document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
+			document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
+			document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
+			document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
+			document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
+			document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} BTC`
+			document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
+		}
+
+		ws2.onerror = (error) => {
+			console.error('ws2 에러' + error)
+		}
+
 	})
 	document.getElementById('type').addEventListener('change', function() {
 		type = this.value;
@@ -92,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	function getTime(type,timestamp) {
+	function getTime(type, timestamp) {
 		switch (type) {
 			case "seconds":
 				return Math.floor((timestamp + (9 * 60 * 60 * 1000)) / 1000);
@@ -118,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (data.code == code && data.type == getType(type)) {
 			// 캔들 데이터 업데이트
 			const candleData = {
-				time: getTime(type,data.timestamp),
+				time: getTime(type, data.timestamp),
 				open: data.openingPrice,
 				high: data.highPrice,
 				low: data.lowPrice,
@@ -139,4 +171,38 @@ document.addEventListener('DOMContentLoaded', () => {
 	ws.onclose = () => {
 		console.log('WebSocket 연결 종료');
 	};
+
+
+
+
+
+	let ws2 = new WebSocket('wss://api.upbit.com/websocket/v1')
+
+	ws2.onopen = () => {
+		console.log('ws2 연결 성공')
+		ws2.send(JSON.stringify([
+			{ "ticket": "test" },
+			{ "type": "ticker", "codes": [`${code}`] }
+		]))
+	}
+
+
+	ws2.onmessage = async (event) => {
+		let text = await event.data.text()
+		let data = JSON.parse(text)
+		document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
+		document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
+		document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
+		document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
+		document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
+		document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
+		document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} BTC`
+		document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
+	}
+
+	ws2.onerror = (error) => {
+		console.error('ws2 에러' + error)
+	}
+
+
 })
