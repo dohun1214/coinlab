@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		wickDownColor: '#1375EC',
 	});
 
-		// 초기 데이터 가져오기
+	// 초기 데이터 가져오기
 	async function loadInitialData(code, type) {
 		candlestickSeries.setData([]);
 		try {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// 초기 데이터 로드
 
 	// WebSocket 연결
-	const ws = new WebSocket('ws:localhost:8080/CoinLab/candle');
+	const ws = new WebSocket('ws://localhost:8080/CoinLab/candle');
 
 	ws.onopen = () => {
 		console.log('WebSocket 연결됨');
@@ -92,6 +92,25 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	function getTime(type,timestamp) {
+		switch (type) {
+			case "seconds":
+				return Math.floor((timestamp + (9 * 60 * 60 * 1000)) / 1000);
+			case "minutes/1":
+				return Math.floor((timestamp + 9 * 60 * 60 * 1000) / 1000 / 60) * 60;
+			case "minutes/5":
+				return Math.floor((timestamp + 9 * 60 * 60 * 1000) / 1000 / 300) * 300;
+			case "minutes/10":
+				return Math.floor((timestamp + 9 * 60 * 60 * 1000) / 1000 / 600) * 600;
+			case "minutes/30":
+				return Math.floor((timestamp + 9 * 60 * 60 * 1000) / 1000 / 1800) * 1800;
+			case "minutes/60":
+				return Math.floor((timestamp + 9 * 60 * 60 * 1000) / 1000 / 3600) * 3600;
+			case "minutes/240":
+				return Math.floor((timestamp + 9 * 60 * 60 * 1000) / 1000 / 14400) * 14400;
+		}
+	}
+
 	ws.onmessage = (event) => {
 		/** @type {{type : string, code: string, koreanName: string, openingPrice: number, highPrice : number, lowPrice : number, tradePrice : number, timestamp : number}} */
 		let data = JSON.parse(event.data)
@@ -99,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (data.code == code && data.type == getType(type)) {
 			// 캔들 데이터 업데이트
 			const candleData = {
-				time: Math.floor((data.timestamp + (9 * 60 * 60 * 1000)) / 1000), // 밀리초를 초로 변환
+				time: getTime(type,data.timestamp),
 				open: data.openingPrice,
 				high: data.highPrice,
 				low: data.lowPrice,
