@@ -69,34 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		code = this.value;
 		loadInitialData(code, type)
 		ws2.close()
-		ws2 = new WebSocket('wss://api.upbit.com/websocket/v1')
-
-		ws2.onopen = () => {
-			console.log('ws2 연결 성공')
-			ws2.send(JSON.stringify([
-				{ "ticket": "test" },
-				{ "type": "ticker", "codes": [`${code}`] }
-			]))
-		}
-
-
-		ws2.onmessage = async (event) => {
-			let text = await event.data.text()
-			let data = JSON.parse(text)
-
-			document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
-			document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
-			document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
-			document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
-			document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
-			document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
-			document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} BTC`
-			document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
-		}
-
-		ws2.onerror = (error) => {
-			console.error('ws2 에러' + error)
-		}
+		ws2 = connectNewWebSocket(code)
 
 	})
 	document.getElementById('type').addEventListener('change', function() {
@@ -173,36 +146,39 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 
+	let ws2 = connectNewWebSocket(code)
+	function connectNewWebSocket (code) {
+		let ws2 = new WebSocket('wss://api.upbit.com/websocket/v1')
+
+			ws2.onopen = () => {
+				console.log('ws2 연결 성공')
+				ws2.send(JSON.stringify([
+					{ "ticket": "test" },
+					{ "type": "ticker", "codes": [`${code}`] }
+				]))
+			}
 
 
+			ws2.onmessage = async (event) => {
+				let text = await event.data.text()
+				let data = JSON.parse(text)
+				document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
+				document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
+				document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
+				document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
+				document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
+				document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
+				document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} `
+				document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
+			}
 
-	let ws2 = new WebSocket('wss://api.upbit.com/websocket/v1')
-
-	ws2.onopen = () => {
-		console.log('ws2 연결 성공')
-		ws2.send(JSON.stringify([
-			{ "ticket": "test" },
-			{ "type": "ticker", "codes": [`${code}`] }
-		]))
+			ws2.onerror = (error) => {
+				console.error('ws2 에러' + error)
+			}
+			return ws2
 	}
 
-
-	ws2.onmessage = async (event) => {
-		let text = await event.data.text()
-		let data = JSON.parse(text)
-		document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
-		document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
-		document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
-		document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
-		document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
-		document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
-		document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} BTC`
-		document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
-	}
-
-	ws2.onerror = (error) => {
-		console.error('ws2 에러' + error)
-	}
+	
 
 
 })

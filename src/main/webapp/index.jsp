@@ -21,8 +21,8 @@
             <div>
                 <div class="text-[18px] font-bold mb-2">대한민국</div>
                 <div class="text-[32px] font-extrabold leading-snug mb-7">
-                    디지털 자산 거래소<br>
-                    <span class="text-sky-400">Coinlab</span>
+                    모의 코인 투자 시뮬레이터<br>
+                    <span class="text-sky-400">CoinLab</span>
                 </div>
             </div>
 

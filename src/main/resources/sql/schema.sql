@@ -48,7 +48,6 @@ CREATE TABLE holdings (
     coin_name VARCHAR(50) COMMENT '코인 이름 (Bitcoin, Ethereum 등)',
     quantity DECIMAL(20,8) NOT NULL COMMENT '보유 수량',
     avg_buy_price DECIMAL(15,2) NOT NULL COMMENT '평균 매수가',
-    current_price DECIMAL(15,2) DEFAULT 0 COMMENT '현재가 (캐시용)',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간',
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_coin (user_id, coin_symbol),
