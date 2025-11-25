@@ -233,6 +233,29 @@ public class UserDAO {
 		}
 	}
 
+	// role 변경 (USER <-> ADMIN)
+	public void updateUserRole(String username, String role) {
+		String sql = "update users set role = ? where username = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, role);
+			pstmt.setString(2, username);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	// 회원 가입
 	public int insertUser(User user) {
 		String sql = "insert into users(username,password,email,nickname,profile_image,role,last_login) values(?,?,?,?,?,?,?)";

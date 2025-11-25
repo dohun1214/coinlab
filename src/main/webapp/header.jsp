@@ -7,7 +7,7 @@
         <div class="flex items-center justify-between h-20">
             <!-- Left: Logo & Project Name -->
             <div class="flex items-center space-x-3">
-                <a href="index.jsp" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                <a href="<c:url value='/index.jsp' />" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
                     <img src="images/coinlab-logo.png" alt="CoinLab" class="w-14 h-14">
                     <span class="text-2xl font-bold text-blue-600">CoinLab</span>
                 </a>
@@ -15,10 +15,15 @@
 
             <!-- Center: Navigation Menu -->
             <nav class="hidden md:flex items-center space-x-10">
-                <a href="trade.jsp" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">거래</a>
-                <a href="mypage.jsp" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">마이페이지</a>
-                <a href="board.jsp" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">게시판</a>
-                <a href="ranking.jsp" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">랭킹</a>
+                <a href="<c:url value='/trade.jsp' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">거래</a>
+                <a href="<c:url value='/mypage.jsp' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">마이페이지</a>
+                <a href="<c:url value='/board.jsp' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">게시판</a>
+                <a href="<c:url value='/ranking.jsp' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">랭킹</a>
+                <c:if test="${sessionScope.loginUser.role eq 'ADMIN'}">
+                    <a href="<c:url value='/admin/users.do' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">
+                        관리자
+                    </a>
+                </c:if>
             </nav>
 
             <!-- Right: User Info or Login/Register -->
@@ -33,7 +38,7 @@
                                     잔액: <fmt:formatNumber value="${sessionScope.loginUser.initialBalance}" pattern="#,###"/>원
                                 </p>
                             </div>
-                            <a href="logout.do" class="flex items-center space-x-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
+                            <a href="<c:url value='/logout.do' />" class="flex items-center space-x-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>
@@ -44,10 +49,10 @@
 
                     <%-- 로그인 안된 경우 --%>
                     <c:otherwise>
-                        <a href="login.jsp" class="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors">
+                        <a href="<c:url value='/login.jsp' />" class="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors">
                             로그인
                         </a>
-                        <a href="register.jsp" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                        <a href="<c:url value='/register.jsp' />" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
                             회원가입
                         </a>
                     </c:otherwise>
