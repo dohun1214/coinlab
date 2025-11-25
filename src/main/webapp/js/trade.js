@@ -62,16 +62,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-	let code = document.getElementById('coin-select').value;
+	let code = 'KRW-BTC'; // 기본값
 	let type = document.getElementById('type').value;
 	loadInitialData(code, type)
-	document.getElementById('coin-select').addEventListener('change', function() {
-		code = this.value;
-		loadInitialData(code, type)
-		ws2.close()
-		ws2 = connectNewWebSocket(code)
 
-	})
+	// 코인 박스 클릭 이벤트
+	const coinBoxes = document.querySelectorAll('.coin-box');
+	coinBoxes.forEach(box => {
+		box.addEventListener('click', function() {
+			// 모든 박스의 선택 상태 제거
+			coinBoxes.forEach(b => {
+				b.classList.remove('border-blue-500');
+				b.classList.add('border-transparent');
+			});
+
+			// 클릭한 박스 선택 상태로 변경
+			this.classList.remove('border-transparent');
+			this.classList.add('border-blue-500');
+
+			code = this.getAttribute('data-code');
+			loadInitialData(code, type);
+			ws2.close();
+			ws2 = connectNewWebSocket(code);
+		});
+	});
 	document.getElementById('type').addEventListener('change', function() {
 		type = this.value;
 		loadInitialData(code, type)
@@ -133,7 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			candlestickSeries.update(candleData);
 		}
 
-
+		document.querySelectorAll('.price').forEach((d) => {
+			if (d.dataset.code == data.code) {
+				d.innerHTML = data.tradePrice
+			}
+		})
 
 	};
 
@@ -147,38 +165,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 	let ws2 = connectNewWebSocket(code)
-	function connectNewWebSocket (code) {
+	function connectNewWebSocket(code) {
 		let ws2 = new WebSocket('wss://api.upbit.com/websocket/v1')
 
-			ws2.onopen = () => {
-				console.log('ws2 연결 성공')
-				ws2.send(JSON.stringify([
-					{ "ticket": "test" },
-					{ "type": "ticker", "codes": [`${code}`] }
-				]))
-			}
+		ws2.onopen = () => {
+			console.log('ws2 연결 성공')
+			ws2.send(JSON.stringify([
+				{ "ticket": "test" },
+				{ "type": "ticker", "codes": [`${code}`] }
+			]))
+		}
 
 
-			ws2.onmessage = async (event) => {
-				let text = await event.data.text()
-				let data = JSON.parse(text)
-				document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
-				document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
-				document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
-				document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
-				document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
-				document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
-				document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} `
-				document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
-			}
+		ws2.onmessage = async (event) => {
+			let text = await event.data.text()
+			let data = JSON.parse(text)
+			document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
+			document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
+			document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
+			document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
+			document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
+			document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
+			document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} `
+			document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
 
-			ws2.onerror = (error) => {
-				console.error('ws2 에러' + error)
-			}
-			return ws2
+
+
+
+
+		}
+
+
+		ws2.onerror = (error) => {
+			console.error('ws2 에러' + error)
+		}
+		return ws2
 	}
 
-	
 
 
 })
