@@ -1,6 +1,15 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+</style>
 
 <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-6">
@@ -29,11 +38,11 @@
             <!-- Right: User Info or Login/Register -->
             <div class="flex items-center space-x-4">
                 <c:choose>
-                    <%-- 로그인된 경우 --%>
+                    <%-- 로그인 상태 --%>
                     <c:when test="${not empty sessionScope.loginUser}">
                         <div class="flex items-center space-x-4">
                             <div class="text-right">
-                                <p class="text-base font-bold text-gray-900">${sessionScope.loginUser.nickname}님</p>
+                                <p class="text-base font-bold text-gray-900">${sessionScope.loginUser.nickname} 님</p>
                                 <p class="text-sm font-semibold text-blue-600">
                                     잔액: <fmt:formatNumber value="${sessionScope.loginUser.initialBalance}" pattern="#,###"/>원
                                 </p>
@@ -47,7 +56,7 @@
                         </div>
                     </c:when>
 
-                    <%-- 로그인 안된 경우 --%>
+                    <%-- 비로그인 상태 --%>
                     <c:otherwise>
                         <a href="<c:url value='/login.jsp' />" class="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors">
                             로그인

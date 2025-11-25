@@ -12,7 +12,7 @@ import com.coinlab.util.DBUtil;
 
 public class UserDAO {
 
-	// 유저명으로 찾기
+	// username으로 조회
 	public User getUserByUsername(String username) throws SQLException {
 		String sql = "select * from users where username = ? ";
 		Connection conn = null;
@@ -83,7 +83,7 @@ public class UserDAO {
 
 	}
 
-	// 전체 사용자수
+	// 전체 사용자 수
 	public int getUserCount() {
 		String sql = "select count(*) from users";
 		Connection conn = null;
@@ -111,7 +111,7 @@ public class UserDAO {
 
 	}
 
-	// username 중복체크
+	// username 중복 체크
 	public boolean checkIdDuplicate(String username) {
 		String sql = "select * from users where username = ?";
 		Connection conn = null;
@@ -140,7 +140,7 @@ public class UserDAO {
 		return false;
 	}
 
-	// username 으로 유저 삭제
+	// username 으로 삭제
 	public void deleteUser(String username) {
 		String sql = "delete from users where username = ?";
 		Connection conn = null;
@@ -162,7 +162,7 @@ public class UserDAO {
 		}
 	}
 
-	// 마지막 로그인 시간 업데이트
+	// 마지막 로그인 업데이트
 	public void updateLastLogin(String username) {
 		String sql = "update users set last_login = ? where username = ?";
 		Connection conn = null;
@@ -186,7 +186,7 @@ public class UserDAO {
 
 	}
 
-	// nickname 업데이트 (username, nickname 받아서)
+	// nickname 업데이트
 	public void updateNickname(String username, String nickname) {
 		String sql = "update users set nickname = ? where username = ?";
 		Connection conn = null;
@@ -208,6 +208,29 @@ public class UserDAO {
 			}
 		}
 
+	}
+
+	// email 업데이트
+	public void updateEmail(String username, String email) {
+		String sql = "update users set email = ? where username = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, email);
+			pstmt.setString(2, username);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// password 변경
@@ -233,7 +256,30 @@ public class UserDAO {
 		}
 	}
 
-	// role 변경 (USER <-> ADMIN)
+	// 초기 자산 변경
+	public void updateInitialBalance(String username, double initialBalance) {
+		String sql = "update users set initial_balance = ? where username = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setDouble(1, initialBalance);
+			pstmt.setString(2, username);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// role 변경(USER <-> ADMIN)
 	public void updateUserRole(String username, String role) {
 		String sql = "update users set role = ? where username = ?";
 		Connection conn = null;
@@ -268,7 +314,8 @@ public class UserDAO {
 			pstmt.setString(2, user.getPassword());
 			pstmt.setString(3, user.getEmail());
 			pstmt.setString(4, user.getNickname());
-			pstmt.setString(5, user.getProfileImage());
+			String profileImage = user.getProfileImage() != null ? user.getProfileImage() : "/images/default-profile.png";
+			pstmt.setString(5, profileImage);
 			pstmt.setString(6, "USER");
 			pstmt.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
 
@@ -285,6 +332,37 @@ public class UserDAO {
 			}
 		}
 
+	}
+
+	// 회원 수동 등록 (초기 자산 지정)
+	public int insertUserWithBalance(User user, double initialBalance) {
+		String sql = "insert into users(username,password,email,nickname,profile_image,role,initial_balance,last_login) values(?,?,?,?,?,?,?,?)";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user.getUsername());
+			pstmt.setString(2, user.getPassword());
+			pstmt.setString(3, user.getEmail());
+			pstmt.setString(4, user.getNickname());
+			pstmt.setString(5, user.getProfileImage());
+			pstmt.setString(6, "USER");
+			pstmt.setDouble(7, initialBalance);
+			pstmt.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+
+			return pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	// 로그인

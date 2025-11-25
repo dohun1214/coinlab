@@ -20,14 +20,14 @@
     <c:choose>
         <c:when test="${accessDenied}">
             <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-sm">
-                관리자 전용 페이지입니다. 접근 권한이 없습니다.
+                관리자 권한이 없습니다.
             </div>
         </c:when>
         <c:otherwise>
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900">회원 관리</h1>
-                    <p class="text-sm text-gray-600 mt-1">회원 목록 조회, 권한 변경, 탈퇴 처리를 한 곳에서 관리합니다.</p>
+                    <p class="text-sm text-gray-600 mt-1">회원 목록 조회, 권한/닉네임/초기 자산 변경 및 삭제를 관리합니다.</p>
                 </div>
                 <div class="text-right text-sm text-gray-600">
                     <p>로그인한 관리자</p>
@@ -37,7 +37,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                    <p class="text-sm text-gray-500 mb-1">총 회원 수</p>
+                    <p class="text-sm text-gray-500 mb-1">전체 회원 수</p>
                     <p class="text-2xl font-bold text-gray-900"><fmt:formatNumber value="${totalUsers}" pattern="#,###" /></p>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
@@ -60,11 +60,55 @@
                 </div>
             </div>
 
+            <!-- 수동 회원 추가 -->
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-5 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-900">수동으로 회원 추가</h2>
+                        <p class="text-sm text-gray-500">필수 정보 입력 후 등록합니다.</p>
+                    </div>
+                </div>
+                <form action="${ctx}/admin/users.do" method="post" class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                    <input type="hidden" name="action" value="create" />
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">아이디</label>
+                        <input type="text" name="newUsername" required
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">비밀번호</label>
+                        <input type="password" name="password" required
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+                        <input type="email" name="email" required
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">닉네임</label>
+                        <input type="text" name="nickname" required
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">초기 자산</label>
+                        <input type="text" name="initialBalance" placeholder="기본 10,000,000"
+                               class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" />
+                    </div>
+                    <div class="md:col-span-5 flex justify-end">
+                        <button type="submit"
+                                class="px-4 py-2.5 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors">
+                            회원 추가
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                     <div>
                         <h2 class="text-lg font-semibold text-gray-900">회원 목록</h2>
-                        <p class="text-sm text-gray-500">ID, 이메일, 권한, 최근 로그인 정보를 확인하세요.</p>
+                        <p class="text-sm text-gray-500">ID, 이메일, 권한, 최근 로그인 등을 확인하세요.</p>
                     </div>
                 </div>
 
@@ -73,14 +117,14 @@
                         <thead class="bg-gray-50">
                         <tr>
                             <th class="px-4 py-3 text-left font-semibold text-gray-600">#</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600">아이디</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600">닉네임</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600">이메일</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600">권한</th>
-                            <th class="px-4 py-3 text-right font-semibold text-gray-600">초기 자산</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600">가입일</th>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600">최근 로그인</th>
-                            <th class="px-4 py-3 text-right font-semibold text-gray-600">관리</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">아이디</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">닉네임</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">이메일</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap">권한</th>
+                            <th class="px-4 py-3 text-right font-semibold text-gray-600 whitespace-nowrap">초기 자산</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap w-32">가입일</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-600 whitespace-nowrap w-32">최근 로그인</th>
+                            <th class="px-4 py-3 text-right font-semibold text-gray-600 whitespace-nowrap">삭제</th>
                         </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 bg-white">
@@ -88,7 +132,17 @@
                             <tr class="hover:bg-gray-50">
                                 <td class="px-4 py-3 text-gray-500">${loop.index + 1}</td>
                                 <td class="px-4 py-3 font-semibold text-gray-900">${user.username}</td>
-                                <td class="px-4 py-3 text-gray-700">${user.nickname}</td>
+                                <td class="px-4 py-3 text-gray-700">
+                                    <form action="${ctx}/admin/users.do" method="post" class="flex items-center gap-2">
+                                        <input type="hidden" name="action" value="nickname" />
+                                        <input type="hidden" name="username" value="${user.username}" />
+                                        <input type="text" name="nickname" value="${user.nickname}"
+                                               class="w-32 border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                        <button type="submit" class="px-3 py-1.5 rounded-md text-xs font-semibold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors whitespace-nowrap min-w-[60px] text-center">
+                                            적용
+                                        </button>
+                                    </form>
+                                </td>
                                 <td class="px-4 py-3 text-gray-700">${user.email}</td>
                                 <td class="px-4 py-3">
                                     <form action="${ctx}/admin/users.do" method="post" class="flex items-center gap-2">
@@ -98,31 +152,46 @@
                                             <option value="USER" ${user.role eq 'USER' ? 'selected' : ''}>일반</option>
                                             <option value="ADMIN" ${user.role eq 'ADMIN' ? 'selected' : ''}>관리자</option>
                                         </select>
-                                        <button type="submit" class="px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 transition-colors">
-                                            저장
+                                        <button type="submit" class="px-3 py-1.5 rounded-md text-xs font-semibold border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors whitespace-nowrap min-w-[60px] text-center">
+                                            적용
                                         </button>
                                     </form>
                                 </td>
                                 <td class="px-4 py-3 text-right text-gray-800">
-                                    <fmt:formatNumber value="${user.initialBalance}" pattern="#,###" /> 원
+                                    <form action="${ctx}/admin/users.do" method="post" class="flex items-center justify-end gap-2">
+                                        <input type="hidden" name="action" value="balance" />
+                                        <input type="hidden" name="username" value="${user.username}" />
+                                        <input type="text" name="initialBalance"
+                                               value="<fmt:formatNumber value='${user.initialBalance}' pattern='#,###'/>"
+                                               class="w-28 text-right border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                        <button type="submit" class="px-3 py-1.5 rounded-md text-xs font-semibold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors whitespace-nowrap min-w-[60px] text-center">
+                                            적용
+                                        </button>
+                                    </form>
                                 </td>
                                 <td class="px-4 py-3 text-gray-700">
-                                    <fmt:formatDate value="${user.createdAt}" pattern="yyyy-MM-dd HH:mm" />
+                                    <span class="inline-block px-2 py-1 rounded bg-slate-50 text-slate-700 text-[12px] font-mono whitespace-nowrap">
+                                        <fmt:formatDate value="${user.createdAt}" pattern="yyyy-MM-dd HH:mm" />
+                                    </span>
                                 </td>
                                 <td class="px-4 py-3 text-gray-700">
                                     <c:choose>
                                         <c:when test="${not empty user.lastLogin}">
-                                            <fmt:formatDate value="${user.lastLogin}" pattern="yyyy-MM-dd HH:mm" />
+                                            <span class="inline-block px-2 py-1 rounded bg-slate-50 text-slate-700 text-[12px] font-mono whitespace-nowrap">
+                                                <fmt:formatDate value="${user.lastLogin}" pattern="yyyy-MM-dd HH:mm" />
+                                            </span>
                                         </c:when>
-                                        <c:otherwise>-</c:otherwise>
+                                        <c:otherwise>
+                                            <span class="text-slate-400">-</span>
+                                        </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td class="px-4 py-3 text-right">
-                                    <form action="${ctx}/admin/users.do" method="post" class="inline-flex" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                                    <form action="${ctx}/admin/users.do" method="post" class="inline-flex" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                         <input type="hidden" name="action" value="delete" />
                                         <input type="hidden" name="username" value="${user.username}" />
-                                        <button type="submit" class="px-3 py-1.5 border border-red-200 text-red-600 rounded-md text-xs font-semibold hover:bg-red-50 transition-colors">
-                                            탈퇴
+                                        <button type="submit" class="px-3 py-1.5 rounded-md text-xs font-semibold border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors whitespace-nowrap min-w-[60px] text-center">
+                                            삭제
                                         </button>
                                     </form>
                                 </td>
