@@ -17,7 +17,7 @@
             <!-- Left: Logo & Project Name -->
             <div class="flex items-center space-x-3">
                 <a href="<c:url value='/index.jsp' />" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                    <img src="images/coinlab-logo.png" alt="CoinLab" class="w-14 h-14">
+                    <img src="<c:url value='/images/coinlab-logo.png' />" alt="CoinLab" class="w-14 h-14">
                     <span class="text-2xl font-bold text-blue-600">CoinLab</span>
                 </a>
             </div>

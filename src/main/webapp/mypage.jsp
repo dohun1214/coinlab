@@ -24,7 +24,7 @@
             <h1 class="text-2xl font-bold">마이페이지</h1>
             <p class="text-sm text-slate-500">포트폴리오와 계정 정보를 확인하고 수정하세요.</p>
         </div>
-        <a href="profile-edit.jsp"
+        <a href="<c:url value='/profile-edit.jsp' />"
            class="px-4 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">
             내 정보 수정
         </a>
