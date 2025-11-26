@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 	// WebSocket 연결
-	const ws = new WebSocket('ws://localhost:8080/CoinLab/candle');
+	const ws = new WebSocket('ws://localhost:8080/CoinLab/ticker');
 
 	ws.onopen = () => {
 		console.log('WebSocket 연결됨');
@@ -89,6 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('type').addEventListener('change', function() {
 		type = this.value;
 		loadInitialData(code, type)
+		ws2.close()
+		ws2 = connectNewWebSocket(code)
 	})
 
 	function getType(type) {
@@ -131,25 +133,25 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	ws.onmessage = (event) => {
-		/** @type {{type : string, code: string, koreanName: string, openingPrice: number, highPrice : number, lowPrice : number, tradePrice : number, timestamp : number}} */
+
 		let data = JSON.parse(event.data)
+		if (data.code == code) {
 
-		if (data.code == code && data.type == getType(type)) {
-			// 캔들 데이터 업데이트
-			const candleData = {
-				time: getTime(type, data.timestamp),
-				open: data.openingPrice,
-				high: data.highPrice,
-				low: data.lowPrice,
-				close: data.tradePrice
-			};
+			document.getElementById('high_price').innerText = `고가 : ${data.highPrice}`
+			document.getElementById('low_price').innerText = `저가 : ${data.lowPrice}`
+			document.getElementById('trade_price').innerText = `종가 : ${data.tradePrice}`
+			document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
+			document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signedChangeRate * 100 * 100) / 100}%`
+			document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signedChangePrice}`
+			document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.accTradeVolume24h * 1000) / 1000} ${code.split("-")[1]} `
+			document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.accTradePrice24h)} KRW`
 
-			candlestickSeries.update(candleData);
+
 		}
 
 		document.querySelectorAll('.price').forEach((d) => {
 			if (d.dataset.code == data.code) {
-				d.innerHTML = data.tradePrice
+				d.innerHTML = data.change == "RISE"? `<span style="color:#DD3C44">${data.tradePrice}</span>`:`<span style="color:#1375EC">${data.tradePrice}</span>`
 			}
 		})
 
@@ -172,23 +174,25 @@ document.addEventListener('DOMContentLoaded', () => {
 			console.log('ws2 연결 성공')
 			ws2.send(JSON.stringify([
 				{ "ticket": "test" },
-				{ "type": "ticker", "codes": [`${code}`] }
+				{ "type": `${getType(type)}`, "codes": [`${code}`] }
 			]))
 		}
 
 
 		ws2.onmessage = async (event) => {
 			let text = await event.data.text()
+			/** @type {{type : string, code: string, opening_price: number, high_price : number, low_price : number, trade_price : number, timestamp : number}} */
 			let data = JSON.parse(text)
-			document.getElementById('high_price').innerText = `고가 : ${data.high_price}`
-			document.getElementById('low_price').innerText = `저가 : ${data.low_price}`
-			document.getElementById('trade_price').innerText = `종가 : ${data.trade_price}`
-			document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
-			document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signed_change_rate * 100 * 100) / 100}%`
-			document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signed_change_price}`
-			document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.acc_trade_volume_24h * 1000) / 1000} `
-			document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.acc_trade_price_24h)} KRW`
 
+			const candleData = {
+				time: getTime(type, data.timestamp),
+				open: data.opening_price,
+				high: data.high_price,
+				low: data.low_price,
+				close: data.trade_price
+			};
+
+			candlestickSeries.update(candleData);
 
 
 

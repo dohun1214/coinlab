@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import jakarta.websocket.Session;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import okio.ByteString;
 
 public class UpbitWebSocketClient extends WebSocketListener {
@@ -56,7 +59,7 @@ public class UpbitWebSocketClient extends WebSocketListener {
 	public void onOpen(WebSocket webSocket, Response response) {
 		System.out.println("Upbit Websocket 연결 성공");
 
-		String subscribeMessage = "[{\"ticket\": \"test\"},{\"type\": \"candle.1s\", \"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]},{\"type\": \"candle.1m\", \"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]},{\"type\": \"candle.5m\", \"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]},{\"type\": \"candle.10m\", \"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]},{\"type\": \"candle.30m\", \"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]},{\"type\": \"candle.60m\", \"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]},{\"type\": \"candle.240m\", \"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]}]";
+		String subscribeMessage = "[{\"ticket\": \"test\"},{\"type\": \"ticker\",\"codes\": [\"KRW-BTC\",\"KRW-ETH\",\"KRW-SOL\",\"KRW-XRP\",\"KRW-ADA\",\"KRW-AVAX\",\"KRW-DOT\",\"KRW-ARB\",\"KRW-ATOM\",\"KRW-APT\",\"KRW-UNI\",\"KRW-AAVE\",\"KRW-LINK\",\"KRW-SAND\",\"KRW-DOGE\",\"KRW-SHIB\",\"KRW-PEPE\",\"KRW-USDT\",\"KRW-USDC\"]}]";
 		webSocket.send(subscribeMessage);
 
 	}
@@ -74,20 +77,26 @@ public class UpbitWebSocketClient extends WebSocketListener {
 
 		String type = upbitData.get("type").getAsString();
 		String code = upbitData.get("code").getAsString();
-		double openingPrice = upbitData.get("opening_price").getAsDouble();
 		double highPrice = upbitData.get("high_price").getAsDouble();
 		double lowPrice = upbitData.get("low_price").getAsDouble();
 		double trade_price = upbitData.get("trade_price").getAsDouble();
-		long timestamp = upbitData.get("timestamp").getAsLong();
-
+		String change = upbitData.get("change").getAsString();
+		double signedChangePrice = upbitData.get("signed_change_price").getAsDouble();
+		double signedChangeRate = upbitData.get("signed_change_rate").getAsDouble();
+		double accTradePrice24h = upbitData.get("acc_trade_price_24h").getAsDouble();
+		double accTradeVolume24h = upbitData.get("acc_trade_volume_24h").getAsDouble();
+		
 		processed.addProperty("type", type);
 		processed.addProperty("code", code);
 		processed.addProperty("koreanName", getKoreanName(code));
-		processed.addProperty("openingPrice", openingPrice);
 		processed.addProperty("highPrice", highPrice);
 		processed.addProperty("lowPrice", lowPrice);
 		processed.addProperty("tradePrice", trade_price);
-		processed.addProperty("timestamp", timestamp);
+		processed.addProperty("change", change);
+		processed.addProperty("signedChangePrice", signedChangePrice);
+		processed.addProperty("signedChangeRate", signedChangeRate);
+		processed.addProperty("accTradePrice24h", accTradePrice24h);
+		processed.addProperty("accTradeVolume24h", accTradeVolume24h);
 
 	}
 
