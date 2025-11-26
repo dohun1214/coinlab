@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		document.querySelectorAll('.price').forEach((d) => {
 			if (d.dataset.code == data.code) {
-				d.innerHTML = data.change == "RISE"? `<span style="color:#DD3C44">${data.tradePrice}</span>`:`<span style="color:#1375EC">${data.tradePrice}</span>`
+				d.innerHTML = data.change == "RISE"? `<span style="color:#DD3C44">${data.tradePrice}</span>`:data.change =="FALL"? `<span style="color:#1375EC">${data.tradePrice}</span>`:`<span style="color:black">${data.tradePrice}</span>`
 			}
 		})
 
