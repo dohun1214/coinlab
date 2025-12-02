@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import com.coinlab.dao.AssetsDAO;
 import com.coinlab.dao.UserDAO;
 import com.coinlab.dto.User;
 
@@ -25,7 +26,10 @@ public class RegisterServlet extends HttpServlet {
 		
 		User user = new User(username, password, email, nickname, profileImage);
 		UserDAO userDAO = new UserDAO();
-		userDAO.insertUser(user);
+		int userId = userDAO.insertUser(user);
+		
+		AssetsDAO assetsDAO = new AssetsDAO();
+		assetsDAO.insertInitialAssets(userId);
 		
 		response.sendRedirect("login.jsp");
 	}

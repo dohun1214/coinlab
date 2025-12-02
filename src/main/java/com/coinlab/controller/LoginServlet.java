@@ -2,7 +2,9 @@ package com.coinlab.controller;
 
 import java.io.IOException;
 
+import com.coinlab.dao.AssetsDAO;
 import com.coinlab.dao.UserDAO;
+import com.coinlab.dto.Assets;
 import com.coinlab.dto.User;
 
 import jakarta.servlet.ServletException;
@@ -30,8 +32,13 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute("loginUser", user);
 			session.setAttribute("username", user.getUsername());
 			
-			session.setMaxInactiveInterval(3600);
 			userDAO.updateLastLogin(user.getUsername());
+			
+			AssetsDAO assetsDAO = new AssetsDAO();
+			Assets assets = assetsDAO.getAssetsByUserId(user.getUserId());
+			session.setAttribute("userAssets", assets);
+			session.setMaxInactiveInterval(3600);
+			
 			
 			response.sendRedirect("index.jsp");
 			

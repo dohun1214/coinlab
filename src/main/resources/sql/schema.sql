@@ -16,7 +16,6 @@ CREATE TABLE users (
     nickname VARCHAR(50) COMMENT '닉네임',
     profile_image VARCHAR(255) DEFAULT '/images/default-profile.png' COMMENT '프로필 이미지 경로',
     role ENUM('USER', 'ADMIN') DEFAULT 'USER' COMMENT '권한 (일반회원/관리자)',
-    initial_balance DECIMAL(15,2) DEFAULT 10000000.00 COMMENT '초기 자본금',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '가입일',
     last_login TIMESTAMP NULL COMMENT '마지막 로그인',
     INDEX idx_username (username),

@@ -30,7 +30,7 @@
                             <div class="text-right">
                                 <p class="text-base font-bold text-gray-900">${sessionScope.loginUser.nickname}님</p>
                                 <p class="text-sm font-semibold text-blue-600">
-                                    잔액: <fmt:formatNumber value="${sessionScope.loginUser.initialBalance}" pattern="#,###"/>원
+                                    잔액: <fmt:formatNumber value="${ sessionScope.userAssets.krwBalance}" pattern="#,###"/>원
                                 </p>
                             </div>
                             <a href="logout.do" class="flex items-center space-x-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">

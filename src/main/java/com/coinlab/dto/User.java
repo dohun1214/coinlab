@@ -10,7 +10,6 @@ public class User {
 	private String nickname;
 	private String profileImage;
 	private String role;
-	private double initialBalance;
 	private Timestamp createdAt;
 	private Timestamp lastLogin;
 
@@ -26,7 +25,7 @@ public class User {
 	}
 
 	public User(int userId, String username, String password, String email, String nickname, String profileImage,
-			String role, double initialBalance, Timestamp createdAt, Timestamp lastLogin) {
+			String role, Timestamp createdAt, Timestamp lastLogin) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
@@ -34,7 +33,6 @@ public class User {
 		this.nickname = nickname;
 		this.profileImage = profileImage;
 		this.role = role;
-		this.initialBalance = initialBalance;
 		this.createdAt = createdAt;
 		this.lastLogin = lastLogin;
 	}
@@ -95,14 +93,6 @@ public class User {
 		this.role = role;
 	}
 
-	public double getInitialBalance() {
-		return initialBalance;
-	}
-
-	public void setInitialBalance(double initialBalance) {
-		this.initialBalance = initialBalance;
-	}
-
 	public Timestamp getCreatedAt() {
 		return createdAt;
 	}
@@ -122,8 +112,8 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", email=" + email
-				+ ", nickname=" + nickname + ", profileImage=" + profileImage + ", role=" + role + ", initialBalance="
-				+ initialBalance + ", createdAt=" + createdAt + ", lastLogin=" + lastLogin + "]";
+				+ ", nickname=" + nickname + ", profileImage=" + profileImage + ", role=" + role + ", createdAt="
+				+ createdAt + ", lastLogin=" + lastLogin + "]";
 	}
 
 }

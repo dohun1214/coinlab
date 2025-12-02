@@ -60,7 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 
+	let currentPriceBuy = document.getElementById('current_price_buy')
+	let buyQuantity = document.getElementById('buy_quantity')
+	let buyTotal = document.getElementById('buy_total')
 
+	let currentPriceSell = document.getElementById('current_price_sell')
+	let sellQuantity = document.getElementById('sell_quantity')
+	let sellTotal = document.getElementById('sell_total')
 
 	let code = 'KRW-BTC'; // 기본값
 	let type = document.getElementById('type').value;
@@ -82,8 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			code = this.getAttribute('data-code');
 			loadInitialData(code, type);
+			document.getElementById('buy_coinSymbol').value = code
+			document.getElementById('sell_coinSymbol').value = code
 			ws2.close();
 			ws2 = connectNewWebSocket(code);
+
 		});
 	});
 	document.getElementById('type').addEventListener('change', function() {
@@ -132,9 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+
 	ws.onmessage = (event) => {
 
+
 		let data = JSON.parse(event.data)
+
 		if (data.code == code) {
 
 			document.getElementById('high_price').innerText = `고가 : ${data.highPrice}`
@@ -146,12 +158,21 @@ document.addEventListener('DOMContentLoaded', () => {
 			document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.accTradeVolume24h * 1000) / 1000} ${code.split("-")[1]} `
 			document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.accTradePrice24h)} KRW`
 
+			document.getElementById('current_price_buy').innerText = data.tradePrice
+			document.getElementById('buy_price').value = data.tradePrice
+			buyTotal.innerText =Math.floor(parseInt(currentPriceBuy.innerText) * parseFloat(buyQuantity.value)*1000)/1000
+
+			document.getElementById('current_price_sell').innerText = data.tradePrice
+			document.getElementById('sell_price').value = data.tradePrice
+			sellTotal.innerText = parseInt(currentPriceSell.innerText) * parseFloat(sellQuantity.value)
+
+
 
 		}
 
 		document.querySelectorAll('.price').forEach((d) => {
 			if (d.dataset.code == data.code) {
-				d.innerHTML = data.change == "RISE"? `<span style="color:#DD3C44">${data.tradePrice}</span>`:data.change =="FALL"? `<span style="color:#1375EC">${data.tradePrice}</span>`:`<span style="color:black">${data.tradePrice}</span>`
+				d.innerHTML = data.change == "RISE" ? `<span style="color:#DD3C44">${data.tradePrice}</span>` : data.change == "FALL" ? `<span style="color:#1375EC">${data.tradePrice}</span>` : `<span style="color:black">${data.tradePrice}</span>`
 			}
 		})
 
@@ -206,6 +227,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		return ws2
 	}
 
+	document.getElementById('buy_quantity').addEventListener('input', () => {
+		buyTotal.innerText = Math.floor(parseInt(currentPriceBuy.innerText) * parseFloat(buyQuantity.value)*1000)/1000
+	})
+
+	document.getElementById('sell_quantity').addEventListener('input', () => {
+		sellTotal.innerText = parseInt(currentPriceSell.innerText) * parseFloat(sellQuantity.value)
+	})
 
 
 })
