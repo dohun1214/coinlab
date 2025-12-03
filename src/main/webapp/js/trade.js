@@ -1,18 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const chart = LightweightCharts.createChart(document.getElementById('chart'), {
 		layout: {
-			background: { type: 'solid', color: '#1e1e1e' },
-			textColor: '#d1d4dc',
+			background: { type: 'solid', color: '#ffffff' },
+			textColor: '#333333',
 		},
 		grid: {
-			vertLines: { color: '#2b2b43' },
-			horzLines: { color: '#2b2b43' },
+			vertLines: { color: '#f0f0f0' },
+			horzLines: { color: '#f0f0f0' },
 		},
 
 		timeScale: {
 			timeVisible: true,
 			secondsVisible: true,
-		}
+		},
+		width: document.getElementById('chart').clientWidth,
+		height: 400,
 	});
 
 	// 캔들스틱 시리즈 추가 (5.0 문법)
@@ -72,6 +74,41 @@ document.addEventListener('DOMContentLoaded', () => {
 	let type = document.getElementById('type').value;
 	loadInitialData(code, type)
 
+	// 탭 전환 기능
+	const buyTab = document.getElementById('buy_tab');
+	const sellTab = document.getElementById('sell_tab');
+	const buyPanel = document.getElementById('buy_panel');
+	const sellPanel = document.getElementById('sell_panel');
+
+	buyTab.addEventListener('click', () => {
+		buyTab.classList.add('bg-gray-700');
+		sellTab.classList.remove('bg-gray-700');
+		buyPanel.classList.remove('hidden');
+		sellPanel.classList.add('hidden');
+	});
+
+	sellTab.addEventListener('click', () => {
+		sellTab.classList.add('bg-gray-700');
+		buyTab.classList.remove('bg-gray-700');
+		sellPanel.classList.remove('hidden');
+		buyPanel.classList.add('hidden');
+	});
+
+	// 보유 코인 수량 가져오기
+	async function updateCoinHolding(coinCode) {
+		try {
+			const response = await fetch(`trade/getHolding.do?coinSymbol=${coinCode}`);
+			const data = await response.json();
+			document.getElementById('user_coin_quantity').innerText = data.quantity.toFixed(8);
+		} catch (error) {
+			console.error('보유 수량 가져오기 실패:', error);
+			document.getElementById('user_coin_quantity').innerText = '0';
+		}
+	}
+
+	// 초기 로드 시 BTC 보유 수량 가져오기
+	updateCoinHolding(code);
+
 	// 코인 박스 클릭 이벤트
 	const coinBoxes = document.querySelectorAll('.coin-box');
 	coinBoxes.forEach(box => {
@@ -87,6 +124,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			this.classList.add('border-blue-500');
 
 			code = this.getAttribute('data-code');
+
+			// 헤더 정보 업데이트
+			const coinSymbol = code.split("-")[1];
+			document.getElementById('coin_title').innerText = `${getCoinName(code)} (${coinSymbol})`;
+
+			// 보유 수량 업데이트
+			updateCoinHolding(code);
+
 			loadInitialData(code, type);
 			document.getElementById('buy_coinSymbol').value = code
 			document.getElementById('sell_coinSymbol').value = code
@@ -149,22 +194,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		if (data.code == code) {
 
-			document.getElementById('high_price').innerText = `고가 : ${data.highPrice}`
-			document.getElementById('low_price').innerText = `저가 : ${data.lowPrice}`
-			document.getElementById('trade_price').innerText = `종가 : ${data.tradePrice}`
-			document.getElementById('change').innerText = `가격 변동 상태 : ${data.change}\n`
-			document.getElementById('signed_change_rate').innerText = `전일 종가 대비 가격 변화율 : ${Math.floor(data.signedChangeRate * 100 * 100) / 100}%`
-			document.getElementById('signed_change_price').innerText = `전일 종가 대비 가격 변화 : ${data.signedChangePrice}`
-			document.getElementById('acc_trade_volume_24h').innerText = `거래량(24h) : ${Math.floor(data.accTradeVolume24h * 1000) / 1000} ${code.split("-")[1]} `
-			document.getElementById('acc_trade_price_24h').innerText = `거래대금(24h) : ${Math.floor(data.accTradePrice24h)} KRW`
+			// 헤더 정보 업데이트
+			const coinSymbol = code.split("-")[1];
+			document.getElementById('coin_title').innerText = `${getCoinName(code)} (${coinSymbol})`;
+			document.getElementById('header_price').innerText = `${data.tradePrice.toLocaleString()} 원`;
 
-			document.getElementById('current_price_buy').innerText = data.tradePrice
+			// 변동률 배지 업데이트
+			const changeRate = (Math.floor(data.signedChangeRate * 100 * 100) / 100).toFixed(2);
+			const changeBadge = document.getElementById('change_badge');
+
+			if (data.change === 'RISE') {
+				changeBadge.className = 'bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold';
+				changeBadge.innerText = `+${changeRate}%`;
+			} else if (data.change === 'FALL') {
+				changeBadge.className = 'bg-blue-500 text-white px-3 py-1 rounded text-sm font-semibold';
+				changeBadge.innerText = `${changeRate}%`;
+			} else {
+				changeBadge.className = 'bg-gray-500 text-white px-3 py-1 rounded text-sm font-semibold';
+				changeBadge.innerText = '0.00%';
+			}
+
+			document.getElementById('current_price_buy').innerText = `${data.tradePrice.toLocaleString()} 원`
 			document.getElementById('buy_price').value = data.tradePrice
-			buyTotal.innerText =Math.floor(parseInt(currentPriceBuy.innerText) * parseFloat(buyQuantity.value)*1000)/1000
+			buyTotal.innerText = Math.floor(parseInt(data.tradePrice) * parseFloat(buyQuantity.value)*1000)/1000
 
-			document.getElementById('current_price_sell').innerText = data.tradePrice
+			document.getElementById('current_price_sell').innerText = `${data.tradePrice.toLocaleString()} 원`
 			document.getElementById('sell_price').value = data.tradePrice
-			sellTotal.innerText = parseInt(currentPriceSell.innerText) * parseFloat(sellQuantity.value)
+			sellTotal.innerText = Math.floor(parseInt(data.tradePrice) * parseFloat(sellQuantity.value)*1000)/1000
 
 
 
@@ -172,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		document.querySelectorAll('.price').forEach((d) => {
 			if (d.dataset.code == data.code) {
-				d.innerHTML = data.change == "RISE" ? `<span style="color:#DD3C44">${data.tradePrice}</span>` : data.change == "FALL" ? `<span style="color:#1375EC">${data.tradePrice}</span>` : `<span style="color:black">${data.tradePrice}</span>`
+				d.innerHTML = data.change == "RISE" ? `<span style="color:#DD3C44">${data.tradePrice.toLocaleString()}</span>` : data.change == "FALL" ? `<span style="color:#1375EC">${data.tradePrice.toLocaleString()}</span>` : `<span style="color:gray">${data.tradePrice.toLocaleString()}</span>`
 			}
 		})
 
@@ -229,11 +285,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	document.getElementById('buy_quantity').addEventListener('input', () => {
 		buyTotal.innerText = Math.floor(parseInt(currentPriceBuy.innerText) * parseFloat(buyQuantity.value)*1000)/1000
+		document.getElementById('buy_quantity_display').innerText = buyQuantity.value
 	})
 
 	document.getElementById('sell_quantity').addEventListener('input', () => {
 		sellTotal.innerText = parseInt(currentPriceSell.innerText) * parseFloat(sellQuantity.value)
+		document.getElementById('sell_quantity_display').innerText = sellQuantity.value
 	})
+
+	// 매수 퍼센트 버튼 기능
+	const buyPercentBtns = document.querySelectorAll('.buy_percent_btn');
+	buyPercentBtns.forEach(btn => {
+		btn.addEventListener('click', () => {
+			const percent = parseInt(btn.getAttribute('data-percent'));
+			const krwBalance = parseFloat(document.getElementById('user_krw_balance').innerText.replace(/,/g, ''));
+			const currentPrice = parseInt(currentPriceBuy.innerText);
+
+			if (currentPrice > 0) {
+				const quantity = (krwBalance * percent / 100) / currentPrice;
+				buyQuantity.value = quantity.toFixed(8);
+				buyTotal.innerText = Math.floor(currentPrice * quantity * 1000) / 1000;
+				document.getElementById('buy_quantity_display').innerText = quantity.toFixed(8);
+			}
+		});
+	});
+
+	// 매도 퍼센트 버튼 기능
+	const sellPercentBtns = document.querySelectorAll('.sell_percent_btn');
+	sellPercentBtns.forEach(btn => {
+		btn.addEventListener('click', () => {
+			const percent = parseInt(btn.getAttribute('data-percent'));
+			const coinQuantity = parseFloat(document.getElementById('user_coin_quantity').innerText);
+			const currentPrice = parseInt(currentPriceSell.innerText);
+
+			const quantity = coinQuantity * percent / 100;
+			sellQuantity.value = quantity.toFixed(8);
+			sellTotal.innerText = Math.floor(currentPrice * quantity * 1000) / 1000;
+			document.getElementById('sell_quantity_display').innerText = quantity.toFixed(8);
+		});
+	});
+
+	// 코인 이름 매핑
+	function getCoinName(code) {
+		const coinNames = {
+			'KRW-BTC': '비트코인',
+			'KRW-ETH': '이더리움',
+			'KRW-SOL': '솔라나',
+			'KRW-XRP': '리플',
+			'KRW-ADA': '에이다',
+			'KRW-AVAX': '아발란체',
+			'KRW-DOT': '폴카닷',
+			'KRW-ARB': '아비트럼',
+			'KRW-ATOM': '코스모스',
+			'KRW-APT': '앱토스',
+			'KRW-UNI': '유니스왑',
+			'KRW-AAVE': '에이브',
+			'KRW-LINK': '체인링크',
+			'KRW-SAND': '샌드박스',
+			'KRW-DOGE': '도지코인',
+			'KRW-SHIB': '시바이누',
+			'KRW-PEPE': '페페',
+			'KRW-USDT': '테더',
+			'KRW-USDC': '유에스디코인'
+		};
+		return coinNames[code] || code;
+	}
 
 
 })

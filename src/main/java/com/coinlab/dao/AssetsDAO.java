@@ -97,8 +97,30 @@ public class AssetsDAO {
 		return false;
 		
 	}
-	
-	
-	
+
+	public boolean increaseKrwBalance(int userId, double amount) {
+		String sql = "update assets set krw_balance = krw_balance + ? where user_id = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setDouble(1, amount);
+			pstmt.setInt(2, userId);
+			int affected = pstmt.executeUpdate();
+			return affected > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
 
 }

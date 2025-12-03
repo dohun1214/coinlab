@@ -11,263 +11,344 @@
 <style>
 body {
 	margin: 0;
-	padding: 20px;
+	padding: 0;
 	background-color: #1e1e1e;
+	overflow: hidden;
+}
+
+.container {
+	display: flex;
+	height: 100vh;
+}
+
+.sidebar {
+	width: 280px;
+	background-color: #252525;
+	overflow-y: auto;
+	padding: 16px;
+	border-right: 1px solid #333;
+}
+
+.sidebar::-webkit-scrollbar {
+	width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+	background: #1e1e1e;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+	background: #555;
+	border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+	background: #777;
+}
+
+.main-content {
+	flex: 1;
+	overflow-y: auto;
+	padding: 20px;
 }
 
 #chart {
 	width: 100%;
-	height: 600px;
+	height: 400px;
 }
 </style>
 <script
 	src="https://unpkg.com/lightweight-charts@5.0.9/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
-	<div
-		class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6">
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-blue-500 rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-BTC">
-			<div class="text-white font-semibold">비트코인</div>
-			<div class="text-gray-400 text-xs mt-1">BTC</div>
-			<div class="price" data-code="KRW-BTC"></div>
+	<div class="container">
+		<!-- 사이드바 -->
+		<div class="sidebar">
+			<h2 class="text-white text-lg font-bold mb-4">코인 목록</h2>
+			<div class="flex flex-col gap-2">
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-blue-500 rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-BTC">
+					<div class="text-white font-semibold">비트코인</div>
+					<div class="text-gray-400 text-xs mt-1">BTC</div>
+					<div class="price" data-code="KRW-BTC"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-ETH">
+					<div class="text-white font-semibold">이더리움</div>
+					<div class="text-gray-400 text-xs mt-1">ETH</div>
+					<div class="price" data-code="KRW-ETH"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-SOL">
+					<div class="text-white font-semibold">솔라나</div>
+					<div class="text-gray-400 text-xs mt-1">SOL</div>
+					<div class="price" data-code="KRW-SOL"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-XRP">
+					<div class="text-white font-semibold">리플</div>
+					<div class="text-gray-400 text-xs mt-1">XRP</div>
+					<div class="price" data-code="KRW-XRP"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-ADA">
+					<div class="text-white font-semibold">에이다</div>
+					<div class="text-gray-400 text-xs mt-1">ADA</div>
+					<div class="price" data-code="KRW-ADA"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-AVAX">
+					<div class="text-white font-semibold">아발란체</div>
+					<div class="text-gray-400 text-xs mt-1">AVAX</div>
+					<div class="price" data-code="KRW-AVAX"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-DOT">
+					<div class="text-white font-semibold">폴카닷</div>
+					<div class="text-gray-400 text-xs mt-1">DOT</div>
+					<div class="price" data-code="KRW-DOT"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-ARB">
+					<div class="text-white font-semibold">아비트럼</div>
+					<div class="text-gray-400 text-xs mt-1">ARB</div>
+					<div class="price" data-code="KRW-ARB"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-ATOM">
+					<div class="text-white font-semibold">코스모스</div>
+					<div class="text-gray-400 text-xs mt-1">ATOM</div>
+					<div class="price" data-code="KRW-ATOM"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-APT">
+					<div class="text-white font-semibold">앱토스</div>
+					<div class="text-gray-400 text-xs mt-1">APT</div>
+					<div class="price" data-code="KRW-APT"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-UNI">
+					<div class="text-white font-semibold">유니스왑</div>
+					<div class="text-gray-400 text-xs mt-1">UNI</div>
+					<div class="price" data-code="KRW-UNI"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-AAVE">
+					<div class="text-white font-semibold">에이브</div>
+					<div class="text-gray-400 text-xs mt-1">AAVE</div>
+					<div class="price" data-code="KRW-AAVE"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-LINK">
+					<div class="text-white font-semibold">체인링크</div>
+					<div class="text-gray-400 text-xs mt-1">LINK</div>
+					<div class="price" data-code="KRW-LINK"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-SAND">
+					<div class="text-white font-semibold">샌드박스</div>
+					<div class="text-gray-400 text-xs mt-1">SAND</div>
+					<div class="price" data-code="KRW-SAND"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-DOGE">
+					<div class="text-white font-semibold">도지코인</div>
+					<div class="text-gray-400 text-xs mt-1">DOGE</div>
+					<div class="price" data-code="KRW-DOGE"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-SHIB">
+					<div class="text-white font-semibold">시바이누</div>
+					<div class="text-gray-400 text-xs mt-1">SHIB</div>
+					<div class="price" data-code="KRW-SHIB"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-PEPE">
+					<div class="text-white font-semibold">페페</div>
+					<div class="text-gray-400 text-xs mt-1">PEPE</div>
+					<div class="price" data-code="KRW-PEPE"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-USDT">
+					<div class="text-white font-semibold">테더</div>
+					<div class="text-gray-400 text-xs mt-1">USDT</div>
+					<div class="price" data-code="KRW-USDT"></div>
+				</div>
+
+				<div
+					class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
+					data-code="KRW-USDC">
+					<div class="text-white font-semibold">유에스디코인</div>
+					<div class="text-gray-400 text-xs mt-1">USDC</div>
+					<div class="price" data-code="KRW-USDC"></div>
+				</div>
+			</div>
 		</div>
 
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-ETH">
-			<div class="text-white font-semibold">이더리움</div>
-			<div class="text-gray-400 text-xs mt-1">ETH</div>
-			<div class="price" data-code="KRW-ETH"></div>
+		<!-- 메인 컨텐츠 -->
+		<div class="main-content">
+			<!-- 코인 헤더 -->
+			<div class="flex justify-between items-center mb-6">
+				<div class="flex items-center gap-4">
+					<h1 class="text-white text-2xl font-bold" id="coin_title">비트코인 (BTC)</h1>
+					<span class="text-white text-xl" id="header_price">100,000,000 원</span>
+					<span id="change_badge" class="bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold">+1.4%</span>
+				</div>
+				<div class="flex items-center gap-2">
+					<span class="text-gray-400 text-sm">차트 간격:</span>
+					<select id="type" class="bg-gray-700 text-white border border-gray-600 rounded px-3 py-1">
+						<option value="seconds" selected>초</option>
+						<option value="minutes/1">1분</option>
+						<option value="minutes/5">5분</option>
+						<option value="minutes/10">10분</option>
+						<option value="minutes/30">30분</option>
+						<option value="minutes/60">1시간</option>
+						<option value="minutes/240">4시간</option>
+					</select>
+				</div>
+			</div>
+
+			<!-- 실시간 가격 차트 -->
+			<div class="bg-white rounded-lg p-4 mb-6">
+				<h3 class="text-gray-800 font-semibold mb-4">실시간 가격 차트</h3>
+				<div id="chart"></div>
+			</div>
+
+			<!-- 거래 패널 -->
+			<div class="bg-gray-800 rounded-lg overflow-hidden">
+				<!-- 탭 헤더 -->
+				<div class="flex border-b border-gray-700">
+					<button id="buy_tab" class="flex-1 px-6 py-4 text-white font-semibold bg-gray-700 transition-colors">매수</button>
+					<button id="sell_tab" class="flex-1 px-6 py-4 text-white font-semibold hover:bg-gray-700 transition-colors">매도</button>
+				</div>
+
+				<!-- 매수 패널 -->
+				<div id="buy_panel" class="p-6">
+					<form action="trade/buy.do" method="post" id="buy_form">
+						<input type="hidden" name="coinSymbol" id="buy_coinSymbol" value="KRW-BTC">
+						<input type="hidden" name="price" id="buy_price" value="0">
+
+						<div class="mb-4">
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-400">주문 수량</span>
+								<span class="text-white"><span id="buy_quantity_display">0</span>개</span>
+							</div>
+							<div class="flex justify-between text-sm mb-4">
+								<span class="text-gray-400">사용 가능 잔액</span>
+								<span class="text-white"><span id="user_krw_balance"><fmt:formatNumber value="${sessionScope.userAssets.krwBalance}" pattern="#,###" /></span> 원</span>
+							</div>
+
+							<input type="number" id="buy_quantity" step="0.00000001" value="0" name="quantity" class="w-full bg-gray-700 text-white border border-gray-600 rounded px-4 py-3 mb-4">
+
+							<!-- 퍼센트 버튼 -->
+							<div class="grid grid-cols-4 gap-2 mb-4">
+								<button type="button" class="buy_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="25">25%</button>
+								<button type="button" class="buy_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="50">50%</button>
+								<button type="button" class="buy_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="75">75%</button>
+								<button type="button" class="buy_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="100">100%</button>
+							</div>
+
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-400">현재가</span>
+								<span class="text-white" id="current_price_buy">0 원</span>
+							</div>
+							<div class="flex justify-between text-sm mb-4">
+								<span class="text-gray-400">총 금액</span>
+								<span class="text-white" id="buy_total">0 원</span>
+							</div>
+						</div>
+
+						<button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded transition-colors">매수</button>
+					</form>
+				</div>
+
+				<!-- 매도 패널 -->
+				<div id="sell_panel" class="p-6 hidden">
+					<form action="trade/sell.do" method="post" id="sell_form">
+						<input type="hidden" name="coinSymbol" id="sell_coinSymbol" value="KRW-BTC">
+						<input type="hidden" name="price" id="sell_price" value="0">
+
+						<div class="mb-4">
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-400">주문 수량</span>
+								<span class="text-white"><span id="sell_quantity_display">0</span>개</span>
+							</div>
+							<div class="flex justify-between text-sm mb-4">
+								<span class="text-gray-400">보유 수량</span>
+								<span class="text-white" id="user_coin_quantity">0</span>
+							</div>
+
+							<input type="number" id="sell_quantity" step="0.00000001" value="0" name="quantity" class="w-full bg-gray-700 text-white border border-gray-600 rounded px-4 py-3 mb-4">
+
+							<!-- 퍼센트 버튼 -->
+							<div class="grid grid-cols-4 gap-2 mb-4">
+								<button type="button" class="sell_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="25">25%</button>
+								<button type="button" class="sell_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="50">50%</button>
+								<button type="button" class="sell_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="75">75%</button>
+								<button type="button" class="sell_percent_btn bg-gray-700 hover:bg-gray-600 text-white rounded py-2" data-percent="100">100%</button>
+							</div>
+
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-400">현재가</span>
+								<span class="text-white" id="current_price_sell">0 원</span>
+							</div>
+							<div class="flex justify-between text-sm mb-4">
+								<span class="text-gray-400">총 금액</span>
+								<span class="text-white" id="sell_total">0 원</span>
+							</div>
+						</div>
+
+						<button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded transition-colors">매도</button>
+					</form>
+				</div>
+
+				<%-- 성공/에러 메시지 표시 --%>
+				<c:if test="${not empty sessionScope.successMsg}">
+					<div class="mx-6 mb-6 bg-green-600 text-white px-4 py-3 rounded">${sessionScope.successMsg}</div>
+					<c:remove var="successMsg" scope="session" />
+				</c:if>
+
+				<c:if test="${not empty sessionScope.errorMsg}">
+					<div class="mx-6 mb-6 bg-red-600 text-white px-4 py-3 rounded">${sessionScope.errorMsg}</div>
+					<c:remove var="errorMsg" scope="session" />
+				</c:if>
+			</div>
 		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-SOL">
-			<div class="text-white font-semibold">솔라나</div>
-			<div class="text-gray-400 text-xs mt-1">SOL</div>
-			<div class="price" data-code="KRW-SOL"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-XRP">
-			<div class="text-white font-semibold">리플</div>
-			<div class="text-gray-400 text-xs mt-1">XRP</div>
-			<div class="price" data-code="KRW-XRP"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-ADA">
-			<div class="text-white font-semibold">에이다</div>
-			<div class="text-gray-400 text-xs mt-1">ADA</div>
-			<div class="price" data-code="KRW-ADA"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-AVAX">
-			<div class="text-white font-semibold">아발란체</div>
-			<div class="text-gray-400 text-xs mt-1">AVAX</div>
-			<div class="price" data-code="KRW-AVAX"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-DOT">
-			<div class="text-white font-semibold">폴카닷</div>
-			<div class="text-gray-400 text-xs mt-1">DOT</div>
-			<div class="price" data-code="KRW-DOT"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-ARB">
-			<div class="text-white font-semibold">아비트럼</div>
-			<div class="text-gray-400 text-xs mt-1">ARB</div>
-			<div class="price" data-code="KRW-ARB"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-ATOM">
-			<div class="text-white font-semibold">코스모스</div>
-			<div class="text-gray-400 text-xs mt-1">ATOM</div>
-			<div class="price" data-code="KRW-ATOM"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-APT">
-			<div class="text-white font-semibold">앱토스</div>
-			<div class="text-gray-400 text-xs mt-1">APT</div>
-			<div class="price" data-code="KRW-APT"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-UNI">
-			<div class="text-white font-semibold">유니스왑</div>
-			<div class="text-gray-400 text-xs mt-1">UNI</div>
-			<div class="price" data-code="KRW-UNI"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-AAVE">
-			<div class="text-white font-semibold">에이브</div>
-			<div class="text-gray-400 text-xs mt-1">AAVE</div>
-			<div class="price" data-code="KRW-AAVE"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-LINK">
-			<div class="text-white font-semibold">체인링크</div>
-			<div class="text-gray-400 text-xs mt-1">LINK</div>
-			<div class="price" data-code="KRW-LINK"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-SAND">
-			<div class="text-white font-semibold">샌드박스</div>
-			<div class="text-gray-400 text-xs mt-1">SAND</div>
-			<div class="price" data-code="KRW-SAND"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-DOGE">
-			<div class="text-white font-semibold">도지코인</div>
-			<div class="text-gray-400 text-xs mt-1">DOGE</div>
-			<div class="price" data-code="KRW-DOGE"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-SHIB">
-			<div class="text-white font-semibold">시바이누</div>
-			<div class="text-gray-400 text-xs mt-1">SHIB</div>
-			<div class="price" data-code="KRW-SHIB"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-PEPE">
-			<div class="text-white font-semibold">페페</div>
-			<div class="text-gray-400 text-xs mt-1">PEPE</div>
-			<div class="price" data-code="KRW-PEPE"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-USDT">
-			<div class="text-white font-semibold">테더</div>
-			<div class="text-gray-400 text-xs mt-1">USDT</div>
-			<div class="price" data-code="KRW-USDT"></div>
-		</div>
-
-		<div
-			class="coin-box bg-gray-700 hover:bg-gray-600 border-2 border-transparent rounded-lg p-3 cursor-pointer transition-all text-center"
-			data-code="KRW-USDC">
-			<div class="text-white font-semibold">유에스디코인</div>
-			<div class="text-gray-400 text-xs mt-1">USDC</div>
-			<div class="price" data-code="KRW-USDC"></div>
-		</div>
-	</div>
-
-	<select id="type">
-		<option value="seconds" selected>초</option>
-		<option value="minutes/1">1분</option>
-		<option value="minutes/5">5분</option>
-		<option value="minutes/10">10분</option>
-		<option value="minutes/30">30분</option>
-		<option value="minutes/60">1시간</option>
-		<option value="minutes/240">4시간</option>
-	</select>
-
-	<span id="high_price" style="color: red"></span>
-	<span id="low_price" style="color: red"></span>
-	<span id="trade_price" style="color: red"></span>
-	<span id="change" style="color: red"></span>
-	<span id="signed_change_rate" style="color: red"></span>
-	<span id="signed_change_price" style="color: red"></span>
-	<span id="acc_trade_volume_24h" style="color: red"></span>
-	<span id="acc_trade_price_24h" style="color: red"></span>
-
-	<div id="chart"></div>
-
-	<!-- 거래 패널 -->
-	<div style="color: white;">
-		<h2>거래</h2>
-
-		<!-- 보유 자산 -->
-		<div>
-			<p>
-				보유 KRW: <span id="user_krw_balance"><fmt:formatNumber
-						value="${ sessionScope.userAssets.krwBalance}" pattern="#,###" /></span>
-				원
-			</p>
-			<p>
-				보유 수량: <span id="user_coin_quantity">0</span>
-			</p>
-		</div>
-
-		<hr>
-
-		<!-- 매수 -->
-		<h3>매수</h3>
-		<form action="trade/buy.do" method="post">
-			<input type="hidden" name="coinSymbol" id="buy_coinSymbol"
-				value="KRW-BTC"> <input type="hidden" name="price"
-				id="buy_price" value="0">
-			<p>
-				현재가: <span id="current_price_buy">0</span> 원
-			</p>
-			<p>
-				수량: <input type="number" id="buy_quantity" step="0.00000001"
-					value="0" name="quantity">
-			</p>
-			<p>
-				총 금액: <span id="buy_total">0</span> 원
-			</p>
-			<input type="submit" value="매수">
-		</form>
-		
-		<%-- 성공/에러 메시지 표시 --%>
-		<c:if test="${not empty sessionScope.successMsg}">
-			<div class="alert alert-success">${sessionScope.successMsg}</div>
-			<c:remove var="successMsg" scope="session" />
-		</c:if>
-
-		<c:if test="${not empty sessionScope.errorMsg}">
-			<div class="alert alert-error">${sessionScope.errorMsg}</div>
-			<c:remove var="errorMsg" scope="session" />
-		</c:if>
-
-		<hr>
-
-		<!-- 매도 -->
-		<h3>매도</h3>
-		<form action="trade/sell.do" method="post">
-			<input type="hidden" name="coinSymbol" id="sell_coinSymbol"
-				value="KRW-BTC"> <input type="hidden" name="price"
-				id="sell_price" value="0">
-			<p>
-				현재가: <span id="current_price_sell">0</span> 원
-			</p>
-			<p>
-				수량: <input type="number" id="sell_quantity" step="0.00000001"
-					value="0" name="quantity">
-			</p>
-			<p>
-				총 금액: <span id="sell_total">0</span> 원
-			</p>
-			<input type="submit" value="매도">
-		</form>
 	</div>
 
 
