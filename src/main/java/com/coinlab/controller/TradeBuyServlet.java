@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 import com.coinlab.dao.AssetsDAO;
+import com.coinlab.dao.HoldingsDAO;
+import com.coinlab.dao.TransactionsDAO;
 import com.coinlab.dto.Assets;
 import com.coinlab.dto.User;
 
@@ -19,7 +21,7 @@ public class TradeBuyServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String coinSymbol = request.getParameter("coinSymbol");
+		String coinSymbol = request.getParameter("coinSymbol").split("-")[1];
 		int price =Integer.parseInt(request.getParameter("price"));
 		double quantity = Double.parseDouble(request.getParameter("quantity"));
 		double totalPrice = price * quantity;
@@ -39,6 +41,14 @@ public class TradeBuyServlet extends HttpServlet {
 		if(success) {
 			Assets updatedAssets = assetsDAO.getAssetsByUserId(user.getUserId());
 			session.setAttribute("userAssets", updatedAssets);
+			
+			HoldingsDAO holdingsDAO = new HoldingsDAO();
+			holdingsDAO.addCoinHolding(user.getUserId(), coinSymbol, quantity, price);
+			
+			TransactionsDAO transactionDAO = new TransactionsDAO();
+			transactionDAO.insertTransaction(user.getUserId(), coinSymbol, "BUY", quantity, price, totalPrice);
+			
+
 			
 			session.setAttribute("successMsg", "매수가 완료되었습니다");
 			

@@ -44,7 +44,6 @@ CREATE TABLE holdings (
     holding_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '보유 내역 고유 번호',
     user_id INT NOT NULL COMMENT '회원 번호',
     coin_symbol VARCHAR(20) NOT NULL COMMENT '코인 심볼 (BTC, ETH 등)',
-    coin_name VARCHAR(50) COMMENT '코인 이름 (Bitcoin, Ethereum 등)',
     quantity DECIMAL(20,8) NOT NULL COMMENT '보유 수량',
     avg_buy_price DECIMAL(15,2) NOT NULL COMMENT '평균 매수가',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간',

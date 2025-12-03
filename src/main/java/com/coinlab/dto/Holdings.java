@@ -6,7 +6,6 @@ public class Holdings {
 	private int holdingId;
 	private int userId;
 	private String coinSymbol;
-	private String coinName;
 	private double quantity;
 	private double avgBuyPrice;
 	private Timestamp updatedAt;
@@ -14,20 +13,18 @@ public class Holdings {
 	public Holdings() {
 	}
 
-	public Holdings(int userId, String coinSymbol, String coinName, double quantity, double avgBuyPrice) {
+	public Holdings(int userId, String coinSymbol, double quantity, double avgBuyPrice) {
 		this.userId = userId;
 		this.coinSymbol = coinSymbol;
-		this.coinName = coinName;
 		this.quantity = quantity;
 		this.avgBuyPrice = avgBuyPrice;
 	}
 
-	public Holdings(int holdingId, int userId, String coinSymbol, String coinName, double quantity, double avgBuyPrice,
+	public Holdings(int holdingId, int userId, String coinSymbol, double quantity, double avgBuyPrice,
 			Timestamp updatedAt) {
 		this.holdingId = holdingId;
 		this.userId = userId;
 		this.coinSymbol = coinSymbol;
-		this.coinName = coinName;
 		this.quantity = quantity;
 		this.avgBuyPrice = avgBuyPrice;
 		this.updatedAt = updatedAt;
@@ -57,14 +54,6 @@ public class Holdings {
 		this.coinSymbol = coinSymbol;
 	}
 
-	public String getCoinName() {
-		return coinName;
-	}
-
-	public void setCoinName(String coinName) {
-		this.coinName = coinName;
-	}
-
 	public double getQuantity() {
 		return quantity;
 	}
@@ -91,9 +80,8 @@ public class Holdings {
 
 	@Override
 	public String toString() {
-		return "Holdings [holdingId=" + holdingId + ", userId=" + userId + ", coinSymbol=" + coinSymbol + ", coinName="
-				+ coinName + ", quantity=" + quantity + ", avgBuyPrice=" + avgBuyPrice + ", updatedAt=" + updatedAt
-				+ "]";
+		return "Holdings [holdingId=" + holdingId + ", userId=" + userId + ", coinSymbol=" + coinSymbol + ", quantity="
+				+ quantity + ", avgBuyPrice=" + avgBuyPrice + ", updatedAt=" + updatedAt + "]";
 	}
 
 }
