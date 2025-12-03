@@ -1,4 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
+	// 페이지 로드 시 스크롤 위치 복원
+	const savedScrollPosition = sessionStorage.getItem('tradeScrollPosition');
+	if (savedScrollPosition) {
+		window.scrollTo(0, parseInt(savedScrollPosition));
+		sessionStorage.removeItem('tradeScrollPosition');
+	}
+
+	// 성공/에러 메시지 5초 후 자동 사라지기
+	const successMessage = document.getElementById('success_message');
+	const errorMessage = document.getElementById('error_message');
+
+	if (successMessage) {
+		setTimeout(() => {
+			successMessage.style.opacity = '0';
+			setTimeout(() => successMessage.remove(), 500);
+		}, 5000);
+	}
+
+	if (errorMessage) {
+		setTimeout(() => {
+			errorMessage.style.opacity = '0';
+			setTimeout(() => errorMessage.remove(), 500);
+		}, 5000);
+	}
+
 	const chart = LightweightCharts.createChart(document.getElementById('chart'), {
 		layout: {
 			background: { type: 'solid', color: '#ffffff' },
@@ -81,15 +106,27 @@ document.addEventListener('DOMContentLoaded', () => {
 	const sellPanel = document.getElementById('sell_panel');
 
 	buyTab.addEventListener('click', () => {
-		buyTab.classList.add('bg-gray-700');
-		sellTab.classList.remove('bg-gray-700');
+		// 매수 탭 활성화
+		buyTab.classList.add('bg-red-50', 'text-red-600', 'border-b-2', 'border-red-600');
+		buyTab.classList.remove('text-gray-600', 'hover:bg-gray-50');
+
+		// 매도 탭 비활성화
+		sellTab.classList.remove('bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-600');
+		sellTab.classList.add('text-gray-600', 'hover:bg-gray-50');
+
 		buyPanel.classList.remove('hidden');
 		sellPanel.classList.add('hidden');
 	});
 
 	sellTab.addEventListener('click', () => {
-		sellTab.classList.add('bg-gray-700');
-		buyTab.classList.remove('bg-gray-700');
+		// 매도 탭 활성화
+		sellTab.classList.add('bg-blue-50', 'text-blue-600', 'border-b-2', 'border-blue-600');
+		sellTab.classList.remove('text-gray-600', 'hover:bg-gray-50');
+
+		// 매수 탭 비활성화
+		buyTab.classList.remove('bg-red-50', 'text-red-600', 'border-b-2', 'border-red-600');
+		buyTab.classList.add('text-gray-600', 'hover:bg-gray-50');
+
 		sellPanel.classList.remove('hidden');
 		buyPanel.classList.add('hidden');
 	});
@@ -216,14 +253,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			document.getElementById('current_price_buy').innerText = `${data.tradePrice.toLocaleString()} 원`
 			document.getElementById('buy_price').value = data.tradePrice
-			buyTotal.innerText = Math.floor(parseInt(data.tradePrice) * parseFloat(buyQuantity.value)*1000)/1000
+			const buyTotalAmount = Math.floor(data.tradePrice * parseFloat(buyQuantity.value));
+			buyTotal.innerText = buyTotalAmount.toLocaleString() + ' 원';
 
 			document.getElementById('current_price_sell').innerText = `${data.tradePrice.toLocaleString()} 원`
 			document.getElementById('sell_price').value = data.tradePrice
-			sellTotal.innerText = Math.floor(parseInt(data.tradePrice) * parseFloat(sellQuantity.value)*1000)/1000
+			const sellTotalAmount = Math.floor(data.tradePrice * parseFloat(sellQuantity.value));
+			sellTotal.innerText = sellTotalAmount.toLocaleString() + ' 원';
 
+			document.getElementById('high_price').innerHTML = `<span style="color: #DD3C44">${data.highPrice.toLocaleString()} 원</span>`
+			document.getElementById('low_price').innerHTML = `<span style="color: #1375EC">${data.lowPrice.toLocaleString()} 원</span>`
+			document.getElementById('acc_trade_price24h').innerText = `${Math.floor(data.accTradePrice24h).toLocaleString()} 원`
+			document.getElementById('acc_trade_volume24h').innerText = `${data.accTradeVolume24h.toFixed(2)} ${data.code.split("-")[1]}`
 
-
+			// signed_change_price 업데이트
+			const signedChangePriceElem = document.getElementById('signed_change_price');
+			if (data.change === 'RISE') {
+				signedChangePriceElem.className = 'text-red-600 font-medium';
+				signedChangePriceElem.innerText = `+${data.signedChangePrice.toLocaleString()} 원`;
+			} else if (data.change === 'FALL') {
+				signedChangePriceElem.className = 'text-blue-600 font-medium';
+				signedChangePriceElem.innerText = `${data.signedChangePrice.toLocaleString()} 원`;
+			} else {
+				signedChangePriceElem.className = 'text-gray-600 font-medium';
+				signedChangePriceElem.innerText = '0 원';
+			}
 		}
 
 		document.querySelectorAll('.price').forEach((d) => {
@@ -284,13 +338,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	document.getElementById('buy_quantity').addEventListener('input', () => {
-		buyTotal.innerText = Math.floor(parseInt(currentPriceBuy.innerText) * parseFloat(buyQuantity.value)*1000)/1000
-		document.getElementById('buy_quantity_display').innerText = buyQuantity.value
+		const currentPrice = parseFloat(currentPriceBuy.innerText.replace(/,/g, '').replace('원', '').trim());
+		const total = Math.floor(currentPrice * parseFloat(buyQuantity.value));
+		buyTotal.innerText = total.toLocaleString() + ' 원';
+		document.getElementById('buy_quantity_display').innerText = buyQuantity.value;
 	})
 
 	document.getElementById('sell_quantity').addEventListener('input', () => {
-		sellTotal.innerText = parseInt(currentPriceSell.innerText) * parseFloat(sellQuantity.value)
-		document.getElementById('sell_quantity_display').innerText = sellQuantity.value
+		const currentPrice = parseFloat(currentPriceSell.innerText.replace(/,/g, '').replace('원', '').trim());
+		const total = Math.floor(currentPrice * parseFloat(sellQuantity.value));
+		sellTotal.innerText = total.toLocaleString() + ' 원';
+		document.getElementById('sell_quantity_display').innerText = sellQuantity.value;
 	})
 
 	// 매수 퍼센트 버튼 기능
@@ -299,12 +357,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		btn.addEventListener('click', () => {
 			const percent = parseInt(btn.getAttribute('data-percent'));
 			const krwBalance = parseFloat(document.getElementById('user_krw_balance').innerText.replace(/,/g, ''));
-			const currentPrice = parseInt(currentPriceBuy.innerText);
+			const currentPrice = parseFloat(currentPriceBuy.innerText.replace(/,/g, '').replace('원', '').trim());
 
 			if (currentPrice > 0) {
 				const quantity = (krwBalance * percent / 100) / currentPrice;
 				buyQuantity.value = quantity.toFixed(8);
-				buyTotal.innerText = Math.floor(currentPrice * quantity * 1000) / 1000;
+				buyTotal.innerText = Math.floor(currentPrice * quantity).toLocaleString() + ' 원';
 				document.getElementById('buy_quantity_display').innerText = quantity.toFixed(8);
 			}
 		});
@@ -316,11 +374,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		btn.addEventListener('click', () => {
 			const percent = parseInt(btn.getAttribute('data-percent'));
 			const coinQuantity = parseFloat(document.getElementById('user_coin_quantity').innerText);
-			const currentPrice = parseInt(currentPriceSell.innerText);
+			const currentPrice = parseFloat(currentPriceSell.innerText.replace(/,/g, '').replace('원', '').trim());
 
 			const quantity = coinQuantity * percent / 100;
 			sellQuantity.value = quantity.toFixed(8);
-			sellTotal.innerText = Math.floor(currentPrice * quantity * 1000) / 1000;
+			sellTotal.innerText = Math.floor(currentPrice * quantity).toLocaleString() + ' 원';
 			document.getElementById('sell_quantity_display').innerText = quantity.toFixed(8);
 		});
 	});
@@ -351,5 +409,26 @@ document.addEventListener('DOMContentLoaded', () => {
 		return coinNames[code] || code;
 	}
 
+	// 매수 폼 제출 시 검증 및 스크롤 위치 저장
+	document.getElementById('buy_form').addEventListener('submit', (e) => {
+		const quantity = parseFloat(buyQuantity.value);
+		if (quantity <= 0 || isNaN(quantity)) {
+			e.preventDefault();
+			alert('매수 수량은 0.00000001개 이상이어야 합니다.');
+			return false;
+		}
+		sessionStorage.setItem('tradeScrollPosition', window.scrollY);
+	});
+
+	// 매도 폼 제출 시 검증 및 스크롤 위치 저장
+	document.getElementById('sell_form').addEventListener('submit', (e) => {
+		const quantity = parseFloat(sellQuantity.value);
+		if (quantity <= 0 || isNaN(quantity)) {
+			e.preventDefault();
+			alert('매도 수량은 0.00000001개 이상이어야 합니다.');
+			return false;
+		}
+		sessionStorage.setItem('tradeScrollPosition', window.scrollY);
+	});
 
 })

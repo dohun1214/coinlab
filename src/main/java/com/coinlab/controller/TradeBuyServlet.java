@@ -54,7 +54,7 @@ public class TradeBuyServlet extends HttpServlet {
 			
 			response.sendRedirect(request.getContextPath() + "/trade.jsp");
 		}else {
-			request.setAttribute("errorMsg", "잔액이 부족합니다.");
+			session.setAttribute("errorMsg", "잔액이 부족합니다.");
 			response.sendRedirect(request.getContextPath() + "/trade.jsp");
 		}
 		
