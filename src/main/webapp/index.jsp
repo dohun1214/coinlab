@@ -97,7 +97,7 @@
                     <td class="px-3 py-2 text-right text-red-500">-2.85%</td>
                     <td class="px-3 py-2 text-right">2,818조</td>
                 </tr>
-                <tr class="hover:bg-slate-50">
+                <tr class="hover:bg-slate-50">s
                     <td class="px-3 py-2 text-blue-600">2</td>
                     <td class="px-3 py-2">이더리움 ETH/KRW</td>
                     <td class="px-3 py-2 text-right">4,802,000</td>
