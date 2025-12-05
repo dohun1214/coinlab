@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import com.coinlab.dao.BoardDAO;
-import com.coinlab.dto.BoardComment;
-import com.coinlab.dto.BoardPost;
+import com.coinlab.dto.Board;
+import com.coinlab.dto.Comments;
 import com.coinlab.dto.User;
 
 import jakarta.servlet.ServletException;
@@ -29,10 +29,10 @@ public class BoardServlet extends HttpServlet {
 		}
 
 		User loginUser = (User) session.getAttribute("loginUser");
-		List<BoardPost> posts = boardDAO.getPosts(loginUser.getUserId());
+		List<Board> posts = boardDAO.getPosts(loginUser.getUserId());
 
-		for (BoardPost post : posts) {
-			List<BoardComment> comments = boardDAO.getComments(post.getPostId());
+		for (Board post : posts) {
+			List<Comments> comments = boardDAO.getComments(post.getPostId());
 			post.setComments(comments);
 		}
 

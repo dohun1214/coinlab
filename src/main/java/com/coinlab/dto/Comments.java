@@ -2,7 +2,7 @@ package com.coinlab.dto;
 
 import java.sql.Timestamp;
 
-public class BoardComment {
+public class Comments {
 	private int commentId;
 	private int postId;
 	private int userId;

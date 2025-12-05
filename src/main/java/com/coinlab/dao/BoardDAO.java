@@ -8,14 +8,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.coinlab.dto.BoardComment;
-import com.coinlab.dto.BoardPost;
+import com.coinlab.dto.Board;
+import com.coinlab.dto.Comments;
 import com.coinlab.util.DBUtil;
 
 public class BoardDAO {
 
-	public List<BoardPost> getPosts(Integer viewerUserId) {
-		List<BoardPost> posts = new ArrayList<>();
+	public List<Board> getPosts(Integer viewerUserId) {
+		List<Board> posts = new ArrayList<>();
 		String sql = "SELECT b.post_id, b.user_id, b.title, b.content, b.view_count, b.created_at, b.updated_at, "
 				+ "u.nickname, u.profile_image, "
 				+ "(SELECT COUNT(*) FROM comments c WHERE c.post_id = b.post_id) AS comment_count, "
@@ -36,7 +36,7 @@ public class BoardDAO {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				BoardPost post = new BoardPost();
+				Board post = new Board();
 				post.setPostId(rs.getInt("post_id"));
 				post.setUserId(rs.getInt("user_id"));
 				post.setTitle(rs.getString("title"));
@@ -64,8 +64,8 @@ public class BoardDAO {
 		return posts;
 	}
 
-	public List<BoardComment> getComments(int postId) {
-		List<BoardComment> comments = new ArrayList<>();
+	public List<Comments> getComments(int postId) {
+		List<Comments> comments = new ArrayList<>();
 		String sql = "SELECT c.comment_id, c.post_id, c.user_id, c.content, c.created_at, u.nickname, u.profile_image "
 				+ "FROM comments c JOIN users u ON u.user_id = c.user_id "
 				+ "WHERE c.post_id = ? ORDER BY c.created_at ASC";
@@ -81,7 +81,7 @@ public class BoardDAO {
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				BoardComment comment = new BoardComment();
+				Comments comment = new Comments();
 				comment.setCommentId(rs.getInt("comment_id"));
 				comment.setPostId(rs.getInt("post_id"));
 				comment.setUserId(rs.getInt("user_id"));

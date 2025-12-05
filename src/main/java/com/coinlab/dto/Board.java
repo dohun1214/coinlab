@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardPost {
+public class Board {
 	private int postId;
 	private int userId;
 	private String title;
@@ -22,7 +22,7 @@ public class BoardPost {
 	private int commentCount;
 	private boolean likedByMe;
 
-	private List<BoardComment> comments = new ArrayList<>();
+	private List<Comments> comments = new ArrayList<>();
 
 	public int getPostId() {
 		return postId;
@@ -120,11 +120,11 @@ public class BoardPost {
 		this.likedByMe = likedByMe;
 	}
 
-	public List<BoardComment> getComments() {
+	public List<Comments> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<BoardComment> comments) {
+	public void setComments(List<Comments> comments) {
 		this.comments = comments;
 	}
 }
