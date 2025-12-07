@@ -2,8 +2,12 @@ package com.coinlab.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.coinlab.dao.AssetsDAO;
 import com.coinlab.dao.UserDAO;
+import com.coinlab.dto.Assets;
 import com.coinlab.dto.User;
 
 import jakarta.servlet.ServletException;
@@ -17,6 +21,7 @@ import jakarta.servlet.http.HttpSession;
 public class AdminUserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final UserDAO userDAO = new UserDAO();
+	private final AssetsDAO assetsDAO = new AssetsDAO();
 
 	private void refreshLoginUserIfSame(HttpSession session, String username) {
 		if (session == null || username == null) {
@@ -27,6 +32,11 @@ public class AdminUserServlet extends HttpServlet {
 			try {
 				User refreshed = userDAO.getUserByUsername(username);
 				session.setAttribute("loginUser", refreshed);
+				// 자산 정보도 함께 업데이트
+				Assets assets = assetsDAO.getAssetsByUserId(refreshed.getUserId());
+				if (assets != null) {
+					session.setAttribute("userAssets", assets);
+				}
 			} catch (Exception ignored) {
 			}
 		}
@@ -54,8 +64,18 @@ public class AdminUserServlet extends HttpServlet {
 			users = new ArrayList<>();
 		}
 
+		// 각 유저의 자산 정보를 Map으로 저장
+		Map<Integer, Assets> assetsMap = new HashMap<>();
+		for (User user : users) {
+			Assets assets = assetsDAO.getAssetsByUserId(user.getUserId());
+			if (assets != null) {
+				assetsMap.put(user.getUserId(), assets);
+			}
+		}
+
 		request.setAttribute("users", users);
 		request.setAttribute("userCount", users.size());
+		request.setAttribute("assetsMap", assetsMap);
 		request.getRequestDispatcher("/admin-users.jsp").forward(request, response);
 	}
 
@@ -78,21 +98,16 @@ public class AdminUserServlet extends HttpServlet {
 			String password = request.getParameter("password");
 			String email = request.getParameter("email");
 			String nickname = request.getParameter("nickname");
-			String balanceStr = request.getParameter("initialBalance");
 			if (newUsername != null && password != null && email != null && nickname != null) {
-				try {
-					double balance = (balanceStr != null && !balanceStr.isBlank())
-							? Double.parseDouble(balanceStr.replace(",", ""))
-							: 10000000.0;
-					User newUser = new User();
-					newUser.setUsername(newUsername.trim());
-					newUser.setPassword(password.trim());
-					newUser.setEmail(email.trim());
-					newUser.setNickname(nickname.trim());
-					newUser.setProfileImage("/images/default-profile.png");
-					userDAO.insertUserWithBalance(newUser, balance);
-				} catch (NumberFormatException ignored) {
-					// 실패 시 무시하고 목록으로 리다이렉트
+				User newUser = new User();
+				newUser.setUsername(newUsername.trim());
+				newUser.setPassword(password.trim());
+				newUser.setEmail(email.trim());
+				newUser.setNickname(nickname.trim());
+				newUser.setProfileImage("/images/default-profile.png");
+				int userId = userDAO.insertUser(newUser);
+				if (userId > 0) {
+					assetsDAO.insertInitialAssets(userId);
 				}
 			}
 		} else if ("delete".equals(action) && username != null) {
@@ -109,12 +124,25 @@ public class AdminUserServlet extends HttpServlet {
 				refreshLoginUserIfSame(session, username);
 			}
 		} else if ("balance".equals(action) && username != null) {
-			String balanceStr = request.getParameter("initialBalance");
+			String balanceStr = request.getParameter("krwBalance");
 			if (balanceStr != null && !balanceStr.isBlank()) {
 				try {
 					double balance = Double.parseDouble(balanceStr.replace(",", ""));
-					userDAO.updateInitialBalance(username, balance);
-					refreshLoginUserIfSame(session, username);
+					try {
+						User user = userDAO.getUserByUsername(username);
+						if (user != null) {
+							assetsDAO.updateKrwBalance(user.getUserId(), balance);
+							// 로그인한 사용자가 자신의 잔액을 변경한 경우 세션 업데이트
+							if (loginUser != null && username.equals(loginUser.getUsername())) {
+								Assets assets = assetsDAO.getAssetsByUserId(user.getUserId());
+								if (assets != null) {
+									session.setAttribute("userAssets", assets);
+								}
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				} catch (NumberFormatException ignored) {
 				}
 			}

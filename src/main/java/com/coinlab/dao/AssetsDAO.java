@@ -222,7 +222,7 @@ public class AssetsDAO {
 	}
 
 	public void updateProfitRate(int userId) {
-		String sql = "update assets set profit_rate = (realized_profit / 10000000) * 100 where user_id = ?";
+		String sql = "update assets set profit_rate = (realized_profit / 100000000) * 100 where user_id = ?";
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -265,6 +265,31 @@ public class AssetsDAO {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	// 관리자용: 원화 잔액 직접 변경
+	public boolean updateKrwBalance(int userId, double newBalance) {
+		String sql = "update assets set krw_balance = ? where user_id = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setDouble(1, newBalance);
+			pstmt.setInt(2, userId);
+			int affected = pstmt.executeUpdate();
+			return affected > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
 }

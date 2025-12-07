@@ -287,29 +287,6 @@ public class UserDAO {
 		}
 	}
 
-	// 초기 자산 변경
-	public void updateInitialBalance(String username, double initialBalance) {
-		String sql = "update users set initial_balance = ? where username = ?";
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-
-		try {
-			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setDouble(1, initialBalance);
-			pstmt.setString(2, username);
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				DBUtil.close(conn, pstmt);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	// role 변경(USER <-> ADMIN)
 	public void updateUserRole(String username, String role) {
 		String sql = "update users set role = ? where username = ?";
@@ -341,7 +318,7 @@ public class UserDAO {
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			
+
 			pstmt=conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, user.getUsername());
 			pstmt.setString(2, user.getPassword());
@@ -353,7 +330,7 @@ public class UserDAO {
 			pstmt.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
 
 			pstmt.executeUpdate();
-			
+
 			rs = pstmt.getGeneratedKeys();
 			if(rs.next()) {
 				return rs.getInt(1);
@@ -365,43 +342,12 @@ public class UserDAO {
 			return 0;
 		} finally {
 			try {
-				DBUtil.close(conn, pstmt);
+				DBUtil.close(conn, pstmt, rs);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 
-	}
-
-	// 회원 수동 등록 (초기 자산 지정)
-	public int insertUserWithBalance(User user, double initialBalance) {
-		String sql = "insert into users(username,password,email,nickname,profile_image,role,initial_balance,last_login) values(?,?,?,?,?,?,?,?)";
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		try {
-			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, user.getUsername());
-			pstmt.setString(2, user.getPassword());
-			pstmt.setString(3, user.getEmail());
-			pstmt.setString(4, user.getNickname());
-			pstmt.setString(5, user.getProfileImage());
-			pstmt.setString(6, "USER");
-			pstmt.setDouble(7, initialBalance);
-			pstmt.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-
-			return pstmt.executeUpdate();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return 0;
-		} finally {
-			try {
-				DBUtil.close(conn, pstmt);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	// 로그인
