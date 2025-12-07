@@ -119,3 +119,19 @@ CREATE TABLE comments (
 ) COMMENT '댓글';
 
 
+
+-- ============================================
+-- 8. 게시글 좋아요 (board_likes)
+-- ============================================
+CREATE TABLE board_likes (
+    like_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '좋아요 고유 번호',
+    post_id INT NOT NULL COMMENT '게시글 번호',
+    user_id INT NOT NULL COMMENT '사용자 번호',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
+    UNIQUE KEY uniq_like (post_id, user_id),
+    FOREIGN KEY (post_id) REFERENCES board(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    INDEX idx_post (post_id),
+    INDEX idx_user (user_id)
+) COMMENT '게시글 좋아요';
+

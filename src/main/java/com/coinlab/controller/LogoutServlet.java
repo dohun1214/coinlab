@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/logout.do")
+@WebServlet(urlPatterns = { "/logout.do", "/admin/logout.do" })
 public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -18,7 +18,7 @@ public class LogoutServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		session.invalidate();
-		response.sendRedirect("index.jsp");
+		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
 
 }
