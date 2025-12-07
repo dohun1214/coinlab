@@ -3,8 +3,8 @@ package com.coinlab.websocket;
 import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 
-@ServerEndpoint("/candle")
-public class CandleWebSocketEndpoint {
+@ServerEndpoint("/ticker")
+public class TickerWebSocketEndpoint {
 
 	private static UpbitWebSocketClient upbitClient;
 

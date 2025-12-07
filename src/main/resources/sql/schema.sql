@@ -16,7 +16,6 @@ CREATE TABLE users (
     nickname VARCHAR(50) COMMENT '닉네임',
     profile_image VARCHAR(255) DEFAULT '/images/default-profile.png' COMMENT '프로필 이미지 경로',
     role ENUM('USER', 'ADMIN') DEFAULT 'USER' COMMENT '권한 (일반회원/관리자)',
-    initial_balance DECIMAL(15,2) DEFAULT 10000000.00 COMMENT '초기 자본금',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '가입일',
     last_login TIMESTAMP NULL COMMENT '마지막 로그인',
     INDEX idx_username (username),
@@ -31,8 +30,9 @@ CREATE TABLE assets (
     user_id INT NOT NULL COMMENT '회원 번호',
     krw_balance DECIMAL(15,2) DEFAULT 10000000.00 COMMENT '보유 원화',
     total_invested DECIMAL(15,2) DEFAULT 0 COMMENT '총 투자금액',
-    total_value DECIMAL(15,2) DEFAULT 0 COMMENT '보유 코인 평가액',
+    realized_profit DECIMAL(15,2) DEFAULT 0 COMMENT '누적 실현 손익',
     profit_rate DECIMAL(10,4) DEFAULT 0 COMMENT '수익률 (%)',
+    total_fee DECIMAL(15,2) DEFAULT 0 COMMENT '총 거래 수수료',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간',
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     INDEX idx_user (user_id)
@@ -45,10 +45,8 @@ CREATE TABLE holdings (
     holding_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '보유 내역 고유 번호',
     user_id INT NOT NULL COMMENT '회원 번호',
     coin_symbol VARCHAR(20) NOT NULL COMMENT '코인 심볼 (BTC, ETH 등)',
-    coin_name VARCHAR(50) COMMENT '코인 이름 (Bitcoin, Ethereum 등)',
     quantity DECIMAL(20,8) NOT NULL COMMENT '보유 수량',
     avg_buy_price DECIMAL(15,2) NOT NULL COMMENT '평균 매수가',
-    current_price DECIMAL(15,2) DEFAULT 0 COMMENT '현재가 (캐시용)',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간',
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     UNIQUE KEY unique_user_coin (user_id, coin_symbol),
@@ -120,28 +118,10 @@ CREATE TABLE comments (
     INDEX idx_user (user_id)
 ) COMMENT '댓글';
 
--- ============================================
--- 8. 랭킹 뷰 (user_rankings)
--- ============================================
-CREATE VIEW user_rankings AS
-SELECT
-    u.user_id,
-    u.username,
-    u.nickname,
-    u.profile_image,
-    a.krw_balance,
-    a.total_value,
-    a.profit_rate,
-    (a.krw_balance + a.total_value) AS total_assets,
-    RANK() OVER (ORDER BY a.profit_rate DESC) AS rank_by_rate,
-    RANK() OVER (ORDER BY (a.krw_balance + a.total_value) DESC) AS rank_by_assets
-FROM users u
-JOIN assets a ON u.user_id = a.user_id
-WHERE u.role = 'USER'
-ORDER BY a.profit_rate DESC;
+
 
 -- ============================================
--- 9. 게시글 좋아요 (board_likes)
+-- 8. 게시글 좋아요 (board_likes)
 -- ============================================
 CREATE TABLE board_likes (
     like_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '좋아요 고유 번호',
@@ -154,3 +134,4 @@ CREATE TABLE board_likes (
     INDEX idx_post (post_id),
     INDEX idx_user (user_id)
 ) COMMENT '게시글 좋아요';
+

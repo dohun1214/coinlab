@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -33,7 +34,6 @@ public class UserDAO {
 				user.setNickname(rs.getString("nickname"));
 				user.setProfileImage(rs.getString("profile_image"));
 				user.setRole(rs.getString("role"));
-				user.setInitialBalance(rs.getDouble("initial_balance"));
 				user.setCreatedAt(rs.getTimestamp("created_at"));
 				user.setLastLogin(rs.getTimestamp("last_login"));
 
@@ -66,7 +66,7 @@ public class UserDAO {
 			while (rs.next()) {
 				userList.add(new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("password"),
 						rs.getString("email"), rs.getString("nickname"), rs.getString("profile_image"),
-						rs.getString("role"), rs.getDouble("initial_balance"), rs.getTimestamp("created_at"),
+						rs.getString("role"), rs.getTimestamp("created_at"),
 						rs.getTimestamp("last_login")));
 			}
 			return userList;
@@ -140,7 +140,38 @@ public class UserDAO {
 		return false;
 	}
 
+	// email 중복체크
+	public boolean checkEmailDuplicate(String email) {
+		String sql = "select * from users where email = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+
 	// username 으로 삭제
+
 	public void deleteUser(String username) {
 		String sql = "delete from users where username = ?";
 		Connection conn = null;
@@ -307,9 +338,11 @@ public class UserDAO {
 		String sql = "insert into users(username,password,email,nickname,profile_image,role,last_login) values(?,?,?,?,?,?,?)";
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement(sql);
+			
+			pstmt=conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, user.getUsername());
 			pstmt.setString(2, user.getPassword());
 			pstmt.setString(3, user.getEmail());
@@ -319,7 +352,13 @@ public class UserDAO {
 			pstmt.setString(6, "USER");
 			pstmt.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
 
-			return pstmt.executeUpdate();
+			pstmt.executeUpdate();
+			
+			rs = pstmt.getGeneratedKeys();
+			if(rs.next()) {
+				return rs.getInt(1);
+			}
+			return 0;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -381,7 +420,7 @@ public class UserDAO {
 
 			if (rs.next()) {
 				User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getDouble(8), rs.getTimestamp(9), rs.getTimestamp(10));
+						rs.getString(6), rs.getString(7), rs.getTimestamp(8), rs.getTimestamp(9));
 				return user;
 			}
 		} catch (SQLException e) {
