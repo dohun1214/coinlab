@@ -254,7 +254,7 @@ body {
 				<div class="flex items-center gap-4">
 					<h1 class="text-gray-900 text-2xl font-bold" id="coin_title">비트코인 (BTC)</h1>
 					<span class="text-gray-900 text-xl font-semibold" id="header_price">100,000,000 원</span>
-					<span id="change_badge" class6="bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold">+1.4%</span>
+					<span id="change_badge" class="bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold">+1.4%</span>
 					<span id="signed_change_price" class="text-gray-900 font-medium"></span>
 				</div>
 				<div class="flex items-center gap-2">
@@ -340,9 +340,17 @@ body {
 								<span class="text-gray-600">현재가</span>
 								<span class="text-gray-900" id="current_price_buy">0 원</span>
 							</div>
-							<div class="flex justify-between text-sm mb-4">
-								<span class="text-gray-600">총 금액</span>
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-600">주문 금액</span>
 								<span class="text-gray-900" id="buy_total">0 원</span>
+							</div>
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-600">수수료 (0.05%)</span>
+								<span class="text-red-600 font-medium" id="buy_fee">0 원</span>
+							</div>
+							<div class="flex justify-between text-sm mb-4 pt-2 border-t border-gray-200">
+								<span class="text-gray-900 font-semibold">총 결제 금액</span>
+								<span class="text-gray-900 font-semibold" id="buy_total_with_fee">0 원</span>
 							</div>
 						</div>
 
@@ -380,9 +388,17 @@ body {
 								<span class="text-gray-600">현재가</span>
 								<span class="text-gray-900" id="current_price_sell">0 원</span>
 							</div>
-							<div class="flex justify-between text-sm mb-4">
-								<span class="text-gray-600">총 금액</span>
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-600">매도 금액</span>
 								<span class="text-gray-900" id="sell_total">0 원</span>
+							</div>
+							<div class="flex justify-between text-sm mb-2">
+								<span class="text-gray-600">수수료 (0.05%)</span>
+								<span class="text-blue-600 font-medium" id="sell_fee">0 원</span>
+							</div>
+							<div class="flex justify-between text-sm mb-4 pt-2 border-t border-gray-200">
+								<span class="text-gray-900 font-semibold">총 수령 금액</span>
+								<span class="text-gray-900 font-semibold" id="sell_total_after_fee">0 원</span>
 							</div>
 						</div>
 

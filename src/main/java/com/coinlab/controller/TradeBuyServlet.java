@@ -18,6 +18,7 @@ import com.coinlab.dto.User;
 @WebServlet("/trade/buy.do")
 public class TradeBuyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final double FEE_RATE = 0.0005; // 0.05% 수수료
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -25,6 +26,7 @@ public class TradeBuyServlet extends HttpServlet {
 		int price =Integer.parseInt(request.getParameter("price"));
 		double quantity = Double.parseDouble(request.getParameter("quantity"));
 		double totalPrice = price * quantity;
+		double fee = totalPrice * FEE_RATE;
 		
 		HttpSession session = request.getSession(false);
 		
@@ -34,24 +36,29 @@ public class TradeBuyServlet extends HttpServlet {
 		}
 		
 		User user = (User)session.getAttribute("loginUser");
-		
+
 		AssetsDAO assetsDAO = new AssetsDAO();
-		boolean success = assetsDAO.decreaseKrwBalance(user.getUserId(), totalPrice);
-		
+		double totalWithFee = totalPrice + fee;
+		boolean success = assetsDAO.decreaseKrwBalance(user.getUserId(), totalWithFee);
+
 		if(success) {
+			assetsDAO.addTotalInvested(user.getUserId(), totalPrice);
+			assetsDAO.addTotalFee(user.getUserId(), fee);
+
 			Assets updatedAssets = assetsDAO.getAssetsByUserId(user.getUserId());
 			session.setAttribute("userAssets", updatedAssets);
-			
+
 			HoldingsDAO holdingsDAO = new HoldingsDAO();
 			holdingsDAO.addCoinHolding(user.getUserId(), coinSymbol, quantity, price);
-			
-			TransactionsDAO transactionDAO = new TransactionsDAO();
-			transactionDAO.insertTransaction(user.getUserId(), coinSymbol, "BUY", quantity, price, totalPrice);
-			
 
-			
+			TransactionsDAO transactionDAO = new TransactionsDAO();
+			transactionDAO.insertTransaction(user.getUserId(), coinSymbol, "BUY", quantity, price, totalPrice, fee);
+
+
+
+
 			session.setAttribute("successMsg", "매수가 완료되었습니다");
-			
+
 			response.sendRedirect(request.getContextPath() + "/trade.jsp");
 		}else {
 			session.setAttribute("errorMsg", "잔액이 부족합니다.");

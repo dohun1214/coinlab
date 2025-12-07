@@ -37,6 +37,33 @@
           });
   }
 
+  function checkEmailDuplicate() {
+      const email = document.getElementById("email").value;
+
+      if(email == "") {
+          alert("이메일을 입력하세요");
+          return;
+      }
+
+      // AJAX 요청
+      fetch("checkEmailDuplicate.do?email=" + encodeURIComponent(email))
+          .then(response => response.json())
+          .then(data => {
+              const resultDiv = document.getElementById("emailCheckResult");
+              if(data.isDuplicate) {
+                  resultDiv.className = "block text-red-700 bg-red-50 border border-red-200 text-xs mt-2 px-3 py-2 rounded-md";
+                  resultDiv.innerHTML = "이미 사용중인 이메일입니다.";
+              } else {
+                  resultDiv.className = "block text-green-700 bg-green-50 border border-green-200 text-xs mt-2 px-3 py-2 rounded-md";
+                  resultDiv.innerHTML = "사용 가능한 이메일입니다.";
+              }
+          })
+          .catch(error => {
+              console.error("Error:", error);
+              alert("중복 체크 중 오류가 발생했습니다.");
+          });
+  }
+
   function checkPassword() {
       const password = document.getElementById("password").value;
       const passwordConfirm = document.getElementById("passwordConfirm").value;
@@ -61,9 +88,11 @@
 
   function validateForm() {
       const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const passwordConfirm = document.getElementById("passwordConfirm").value;
       const checkResult = document.getElementById("checkResult").innerHTML;
+      const emailCheckResult = document.getElementById("emailCheckResult").innerHTML;
 
       // 아이디 입력 확인
       if(username == "") {
@@ -80,6 +109,24 @@
       // 중복된 아이디인지 확인
       if(checkResult.includes("이미 사용중")) {
           alert("이미 사용중인 아이디입니다. 다른 아이디를 사용해주세요.");
+          return false;
+      }
+
+      // 이메일 입력 확인
+      if(email == "") {
+          alert("이메일을 입력해주세요.");
+          return false;
+      }
+
+      // 이메일 중복 체크 확인
+      if(!emailCheckResult.includes("사용 가능")) {
+          alert("이메일 중복 확인을 해주세요.");
+          return false;
+      }
+
+      // 중복된 이메일인지 확인
+      if(emailCheckResult.includes("이미 사용중")) {
+          alert("이미 사용중인 이메일입니다. 다른 이메일을 사용해주세요.");
           return false;
       }
 
@@ -148,8 +195,12 @@
 			<!-- Email -->
 			<div>
 				<label class="block text-sm font-semibold text-gray-700 mb-2">이메일</label>
-				<input type="email" name="email" placeholder="example@email.com" required
-					class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+				<div class="flex gap-2">
+					<input type="email" id="email" name="email" placeholder="example@email.com" required
+						class="flex-1 px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+					<button type="button" class="px-5 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-lg text-sm font-semibold hover:bg-blue-600 hover:text-white transition-all whitespace-nowrap" onclick="checkEmailDuplicate()">중복확인</button>
+				</div>
+				<div id="emailCheckResult" class="hidden text-xs mt-2 px-3 py-2 rounded-md"></div>
 			</div>
 
 			<!-- Register Button -->

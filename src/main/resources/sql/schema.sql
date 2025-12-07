@@ -30,8 +30,9 @@ CREATE TABLE assets (
     user_id INT NOT NULL COMMENT '회원 번호',
     krw_balance DECIMAL(15,2) DEFAULT 10000000.00 COMMENT '보유 원화',
     total_invested DECIMAL(15,2) DEFAULT 0 COMMENT '총 투자금액',
-    total_value DECIMAL(15,2) DEFAULT 0 COMMENT '보유 코인 평가액',
+    realized_profit DECIMAL(15,2) DEFAULT 0 COMMENT '누적 실현 손익',
     profit_rate DECIMAL(10,4) DEFAULT 0 COMMENT '수익률 (%)',
+    total_fee DECIMAL(15,2) DEFAULT 0 COMMENT '총 거래 수수료',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '업데이트 시간',
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     INDEX idx_user (user_id)
@@ -117,22 +118,4 @@ CREATE TABLE comments (
     INDEX idx_user (user_id)
 ) COMMENT '댓글';
 
--- ============================================
--- 8. 랭킹 뷰 (user_rankings)
--- ============================================
-CREATE VIEW user_rankings AS
-SELECT
-    u.user_id,
-    u.username,
-    u.nickname,
-    u.profile_image,
-    a.krw_balance,
-    a.total_value,
-    a.profit_rate,
-    (a.krw_balance + a.total_value) AS total_assets,
-    RANK() OVER (ORDER BY a.profit_rate DESC) AS rank_by_rate,
-    RANK() OVER (ORDER BY (a.krw_balance + a.total_value) DESC) AS rank_by_assets
-FROM users u
-JOIN assets a ON u.user_id = a.user_id
-WHERE u.role = 'USER'
-ORDER BY a.profit_rate DESC;
+

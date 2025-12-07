@@ -129,4 +129,33 @@ public class HoldingsDAO {
 		return 0.0;
 	}
 
+	public double getAvgBuyPrice(int userId, String coinSymbol) {
+		String sql = "SELECT avg_buy_price FROM holdings WHERE user_id = ? AND coin_symbol = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userId);
+			pstmt.setString(2, coinSymbol);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getDouble("avg_buy_price");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return 0.0;
+	}
+
 }

@@ -18,6 +18,7 @@ import com.coinlab.dto.User;
 @WebServlet("/trade/sell.do")
 public class TradeSellServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final double FEE_RATE = 0.0005; // 0.05% 수수료
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -25,6 +26,7 @@ public class TradeSellServlet extends HttpServlet {
 		int price = Integer.parseInt(request.getParameter("price"));
 		double quantity = Double.parseDouble(request.getParameter("quantity"));
 		double totalPrice = price * quantity;
+		double fee = totalPrice * FEE_RATE;
 
 		HttpSession session = request.getSession(false);
 
@@ -36,17 +38,25 @@ public class TradeSellServlet extends HttpServlet {
 		User user = (User) session.getAttribute("loginUser");
 
 		HoldingsDAO holdingsDAO = new HoldingsDAO();
+		double avgBuyPrice = holdingsDAO.getAvgBuyPrice(user.getUserId(), coinSymbol);
 		boolean success = holdingsDAO.reduceCoinHolding(user.getUserId(), coinSymbol, quantity);
 
 		if (success) {
 			AssetsDAO assetsDAO = new AssetsDAO();
-			assetsDAO.increaseKrwBalance(user.getUserId(), totalPrice);
+			double totalAfterFee = totalPrice - fee;
+			assetsDAO.increaseKrwBalance(user.getUserId(), totalAfterFee);
+			assetsDAO.addTotalFee(user.getUserId(), fee);
+
+			TransactionsDAO transactionDAO = new TransactionsDAO();
+			transactionDAO.insertTransaction(user.getUserId(), coinSymbol, "SELL", quantity, price, totalPrice, fee);
+
+			double realizedProfit = (price - avgBuyPrice) * quantity - fee;
+			assetsDAO.addRealizedProfit(user.getUserId(), realizedProfit);
+			assetsDAO.updateProfitRate(user.getUserId());
 
 			Assets updatedAssets = assetsDAO.getAssetsByUserId(user.getUserId());
 			session.setAttribute("userAssets", updatedAssets);
 
-			TransactionsDAO transactionDAO = new TransactionsDAO();
-			transactionDAO.insertTransaction(user.getUserId(), coinSymbol, "SELL", quantity, price, totalPrice);
 
 			session.setAttribute("successMsg", "매도가 완료되었습니다");
 

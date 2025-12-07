@@ -7,8 +7,9 @@ public class Assets {
 	private int userId;
 	private double krwBalance;
 	private double totalInvested;
-	private double totalValue;
+	private double realizedProfit;
 	private double profitRate;
+	private double totalFee;
 	private Timestamp updatedAt;
 
 	public Assets() {
@@ -19,14 +20,15 @@ public class Assets {
 		this.krwBalance = krwBalance;
 	}
 
-	public Assets(int assetId, int userId, double krwBalance, double totalInvested, double totalValue,
-			double profitRate, Timestamp updatedAt) {
+	public Assets(int assetId, int userId, double krwBalance, double totalInvested, double realizedProfit,
+			double profitRate, double totalFee, Timestamp updatedAt) {
 		this.assetId = assetId;
 		this.userId = userId;
 		this.krwBalance = krwBalance;
 		this.totalInvested = totalInvested;
-		this.totalValue = totalValue;
+		this.realizedProfit = realizedProfit;
 		this.profitRate = profitRate;
+		this.totalFee = totalFee;
 		this.updatedAt = updatedAt;
 	}
 
@@ -62,12 +64,12 @@ public class Assets {
 		this.totalInvested = totalInvested;
 	}
 
-	public double getTotalValue() {
-		return totalValue;
+	public double getRealizedProfit() {
+		return realizedProfit;
 	}
 
-	public void setTotalValue(double totalValue) {
-		this.totalValue = totalValue;
+	public void setRealizedProfit(double realizedProfit) {
+		this.realizedProfit = realizedProfit;
 	}
 
 	public double getProfitRate() {
@@ -76,6 +78,14 @@ public class Assets {
 
 	public void setProfitRate(double profitRate) {
 		this.profitRate = profitRate;
+	}
+
+	public double getTotalFee() {
+		return totalFee;
+	}
+
+	public void setTotalFee(double totalFee) {
+		this.totalFee = totalFee;
 	}
 
 	public Timestamp getUpdatedAt() {
@@ -89,8 +99,8 @@ public class Assets {
 	@Override
 	public String toString() {
 		return "Assets [assetId=" + assetId + ", userId=" + userId + ", krwBalance=" + krwBalance + ", totalInvested="
-				+ totalInvested + ", totalValue=" + totalValue + ", profitRate=" + profitRate + ", updatedAt="
-				+ updatedAt + "]";
+				+ totalInvested + ", realizedProfit=" + realizedProfit + ", profitRate=" + profitRate + ", totalFee="
+				+ totalFee + ", updatedAt=" + updatedAt + "]";
 	}
 
 }

@@ -140,6 +140,35 @@ public class UserDAO {
 		return false;
 	}
 
+	// email 중복체크
+	public boolean checkEmailDuplicate(String email) {
+		String sql = "select * from users where email = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
 	// username 으로 유저 삭제
 	public void deleteUser(String username) {
 		String sql = "delete from users where username = ?";

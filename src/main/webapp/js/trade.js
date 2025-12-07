@@ -90,10 +90,16 @@ document.addEventListener('DOMContentLoaded', () => {
 	let currentPriceBuy = document.getElementById('current_price_buy')
 	let buyQuantity = document.getElementById('buy_quantity')
 	let buyTotal = document.getElementById('buy_total')
+	let buyFee = document.getElementById('buy_fee')
+	let buyTotalWithFee = document.getElementById('buy_total_with_fee')
 
 	let currentPriceSell = document.getElementById('current_price_sell')
 	let sellQuantity = document.getElementById('sell_quantity')
 	let sellTotal = document.getElementById('sell_total')
+	let sellFee = document.getElementById('sell_fee')
+	let sellTotalAfterFee = document.getElementById('sell_total_after_fee')
+
+	const FEE_RATE = 0.0005; // 0.05% 수수료
 
 	let code = 'KRW-BTC'; // 기본값
 	let type = document.getElementById('type').value;
@@ -223,60 +229,76 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	let coin = {
+		'KRW-BTC': {},
+		'KRW-ETH': {}
+	}
 
 	ws.onmessage = (event) => {
 
 
 		let data = JSON.parse(event.data)
 
-		if (data.code == code) {
+		coin[data.code] = data
 
-			// 헤더 정보 업데이트
-			const coinSymbol = code.split("-")[1];
-			document.getElementById('coin_title').innerText = `${getCoinName(code)} (${coinSymbol})`;
-			document.getElementById('header_price').innerText = `${data.tradePrice.toLocaleString()} 원`;
 
-			// 변동률 배지 업데이트
-			const changeRate = (Math.floor(data.signedChangeRate * 100 * 100) / 100).toFixed(2);
-			const changeBadge = document.getElementById('change_badge');
+		for (const key of Object.keys(coin)) {
+			if (code == key) {
+				// 헤더 정보 업데이트
+				const coinSymbol = code.split("-")[1];
+				document.getElementById('coin_title').innerText = `${getCoinName(code)} (${coinSymbol})`;
+				document.getElementById('header_price').innerText = `${coin[code].tradePrice.toLocaleString()} 원`;
 
-			if (data.change === 'RISE') {
-				changeBadge.className = 'bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold';
-				changeBadge.innerText = `+${changeRate}%`;
-			} else if (data.change === 'FALL') {
-				changeBadge.className = 'bg-blue-500 text-white px-3 py-1 rounded text-sm font-semibold';
-				changeBadge.innerText = `${changeRate}%`;
-			} else {
-				changeBadge.className = 'bg-gray-500 text-white px-3 py-1 rounded text-sm font-semibold';
-				changeBadge.innerText = '0.00%';
-			}
+				// 변동률 배지 업데이트
+				const changeRate = (Math.floor(coin[code].signedChangeRate * 100 * 100) / 100).toFixed(2);
+				const changeBadge = document.getElementById('change_badge');
 
-			document.getElementById('current_price_buy').innerText = `${data.tradePrice.toLocaleString()} 원`
-			document.getElementById('buy_price').value = data.tradePrice
-			const buyTotalAmount = Math.floor(data.tradePrice * parseFloat(buyQuantity.value));
-			buyTotal.innerText = buyTotalAmount.toLocaleString() + ' 원';
+				if (coin[code].change === 'RISE') {
+					changeBadge.className = 'bg-red-500 text-white px-3 py-1 rounded text-sm font-semibold';
+					changeBadge.innerText = `+${changeRate}%`;
+				} else if (coin[code].change === 'FALL') {
+					changeBadge.className = 'bg-blue-500 text-white px-3 py-1 rounded text-sm font-semibold';
+					changeBadge.innerText = `${changeRate}%`;
+				} else {
+					changeBadge.className = 'bg-gray-500 text-white px-3 py-1 rounded text-sm font-semibold';
+					changeBadge.innerText = '0.00%';
+				}
 
-			document.getElementById('current_price_sell').innerText = `${data.tradePrice.toLocaleString()} 원`
-			document.getElementById('sell_price').value = data.tradePrice
-			const sellTotalAmount = Math.floor(data.tradePrice * parseFloat(sellQuantity.value));
-			sellTotal.innerText = sellTotalAmount.toLocaleString() + ' 원';
+				document.getElementById('current_price_buy').innerText = `${coin[code].tradePrice.toLocaleString()} 원`
+				document.getElementById('buy_price').value = coin[code].tradePrice
+				const buyTotalAmount = Math.floor(coin[code].tradePrice * parseFloat(buyQuantity.value));
+				const buyFeeAmount = Math.floor(buyTotalAmount * FEE_RATE);
+				buyTotal.innerText = buyTotalAmount.toLocaleString() + ' 원';
+				if(buyFee) buyFee.innerText = buyFeeAmount.toLocaleString() + ' 원';
+				if(buyTotalWithFee) buyTotalWithFee.innerText = (buyTotalAmount + buyFeeAmount).toLocaleString() + ' 원';
 
-			document.getElementById('high_price').innerHTML = `<span style="color: #DD3C44">${data.highPrice.toLocaleString()} 원</span>`
-			document.getElementById('low_price').innerHTML = `<span style="color: #1375EC">${data.lowPrice.toLocaleString()} 원</span>`
-			document.getElementById('acc_trade_price24h').innerText = `${Math.floor(data.accTradePrice24h).toLocaleString()} 원`
-			document.getElementById('acc_trade_volume24h').innerText = `${data.accTradeVolume24h.toFixed(2)} ${data.code.split("-")[1]}`
+				document.getElementById('current_price_sell').innerText = `${coin[code].tradePrice.toLocaleString()} 원`
+				document.getElementById('sell_price').value = coin[code].tradePrice
+				const sellTotalAmount = Math.floor(coin[code].tradePrice * parseFloat(sellQuantity.value));
+				const sellFeeAmount = Math.floor(sellTotalAmount * FEE_RATE);
+				sellTotal.innerText = sellTotalAmount.toLocaleString() + ' 원';
+				if(sellFee) sellFee.innerText = sellFeeAmount.toLocaleString() + ' 원';
+				if(sellTotalAfterFee) sellTotalAfterFee.innerText = (sellTotalAmount - sellFeeAmount).toLocaleString() + ' 원';
 
-			// signed_change_price 업데이트
-			const signedChangePriceElem = document.getElementById('signed_change_price');
-			if (data.change === 'RISE') {
-				signedChangePriceElem.className = 'text-red-600 font-medium';
-				signedChangePriceElem.innerText = `+${data.signedChangePrice.toLocaleString()} 원`;
-			} else if (data.change === 'FALL') {
-				signedChangePriceElem.className = 'text-blue-600 font-medium';
-				signedChangePriceElem.innerText = `${data.signedChangePrice.toLocaleString()} 원`;
-			} else {
-				signedChangePriceElem.className = 'text-gray-600 font-medium';
-				signedChangePriceElem.innerText = '0 원';
+				document.getElementById('high_price').innerHTML = `<span style="color: #DD3C44">${coin[code].highPrice.toLocaleString()} 원</span>`
+				document.getElementById('low_price').innerHTML = `<span style="color: #1375EC">${coin[code].lowPrice.toLocaleString()} 원</span>`
+				document.getElementById('acc_trade_price24h').innerText = `${Math.floor(coin[code].accTradePrice24h).toLocaleString()} 원`
+				document.getElementById('acc_trade_volume24h').innerText = `${coin[code].accTradeVolume24h.toFixed(2)} ${coin[code].code.split("-")[1]}`
+
+				// signed_change_price 업데이트
+				const signedChangePriceElem = document.getElementById('signed_change_price');
+				if (coin[code].change === 'RISE') {
+					signedChangePriceElem.className = 'text-red-600 font-medium';
+					signedChangePriceElem.innerText = `+${coin[code].signedChangePrice.toLocaleString()} 원`;
+				} else if (coin[code].change === 'FALL') {
+					signedChangePriceElem.className = 'text-blue-600 font-medium';
+					signedChangePriceElem.innerText = `${coin[code].signedChangePrice.toLocaleString()} 원`;
+				} else {
+					signedChangePriceElem.className = 'text-gray-600 font-medium';
+					signedChangePriceElem.innerText = '0 원';
+				}
+
+				break
 			}
 		}
 
@@ -340,14 +362,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('buy_quantity').addEventListener('input', () => {
 		const currentPrice = parseFloat(currentPriceBuy.innerText.replace(/,/g, '').replace('원', '').trim());
 		const total = Math.floor(currentPrice * parseFloat(buyQuantity.value));
+		const fee = Math.floor(total * FEE_RATE);
 		buyTotal.innerText = total.toLocaleString() + ' 원';
+		if(buyFee) buyFee.innerText = fee.toLocaleString() + ' 원';
+		if(buyTotalWithFee) buyTotalWithFee.innerText = (total + fee).toLocaleString() + ' 원';
 		document.getElementById('buy_quantity_display').innerText = buyQuantity.value;
 	})
 
 	document.getElementById('sell_quantity').addEventListener('input', () => {
 		const currentPrice = parseFloat(currentPriceSell.innerText.replace(/,/g, '').replace('원', '').trim());
 		const total = Math.floor(currentPrice * parseFloat(sellQuantity.value));
+		const fee = Math.floor(total * FEE_RATE);
 		sellTotal.innerText = total.toLocaleString() + ' 원';
+		if(sellFee) sellFee.innerText = fee.toLocaleString() + ' 원';
+		if(sellTotalAfterFee) sellTotalAfterFee.innerText = (total - fee).toLocaleString() + ' 원';
 		document.getElementById('sell_quantity_display').innerText = sellQuantity.value;
 	})
 
@@ -361,8 +389,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 			if (currentPrice > 0) {
 				const quantity = (krwBalance * percent / 100) / currentPrice;
+				const total = Math.floor(currentPrice * quantity);
+				const fee = Math.floor(total * FEE_RATE);
 				buyQuantity.value = quantity.toFixed(8);
-				buyTotal.innerText = Math.floor(currentPrice * quantity).toLocaleString() + ' 원';
+				buyTotal.innerText = total.toLocaleString() + ' 원';
+				if(buyFee) buyFee.innerText = fee.toLocaleString() + ' 원';
+				if(buyTotalWithFee) buyTotalWithFee.innerText = (total + fee).toLocaleString() + ' 원';
 				document.getElementById('buy_quantity_display').innerText = quantity.toFixed(8);
 			}
 		});
@@ -377,8 +409,12 @@ document.addEventListener('DOMContentLoaded', () => {
 			const currentPrice = parseFloat(currentPriceSell.innerText.replace(/,/g, '').replace('원', '').trim());
 
 			const quantity = coinQuantity * percent / 100;
+			const total = Math.floor(currentPrice * quantity);
+			const fee = Math.floor(total * FEE_RATE);
 			sellQuantity.value = quantity.toFixed(8);
-			sellTotal.innerText = Math.floor(currentPrice * quantity).toLocaleString() + ' 원';
+			sellTotal.innerText = total.toLocaleString() + ' 원';
+			if(sellFee) sellFee.innerText = fee.toLocaleString() + ' 원';
+			if(sellTotalAfterFee) sellTotalAfterFee.innerText = (total - fee).toLocaleString() + ' 원';
 			document.getElementById('sell_quantity_display').innerText = quantity.toFixed(8);
 		});
 	});

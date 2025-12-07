@@ -12,8 +12,8 @@ import com.coinlab.util.DBUtil;
 
 public class TransactionsDAO {
 	public void insertTransaction(int userId, String coinSymbol, String transactionType, double quantity, double price,
-			double totalAmount) {
-		String sql = "insert into transactions(user_id,coin_symbol,transaction_type,quantity,price,total_amount) values(?,?,?,?,?,?)";
+			double totalAmount, double fee) {
+		String sql = "insert into transactions(user_id,coin_symbol,transaction_type,quantity,price,total_amount,fee) values(?,?,?,?,?,?,?)";
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -26,6 +26,7 @@ public class TransactionsDAO {
 			pstmt.setDouble(4, quantity);
 			pstmt.setDouble(5, price);
 			pstmt.setDouble(6, totalAmount);
+			pstmt.setDouble(7, fee);
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
