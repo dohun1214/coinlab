@@ -388,13 +388,17 @@ document.addEventListener('DOMContentLoaded', () => {
 			const currentPrice = parseFloat(currentPriceBuy.innerText.replace(/,/g, '').replace('원', '').trim());
 
 			if (currentPrice > 0) {
-				const quantity = (krwBalance * percent / 100) / currentPrice;
-				const total = Math.floor(currentPrice * quantity);
-				const fee = Math.floor(total * FEE_RATE);
+				// 수수료를 고려한 사용 가능 금액 계산
+				const availableAmount = krwBalance * percent / 100;
+				// 총액 + 수수료 = 사용 가능 금액이므로, 총액 = 사용 가능 금액 / (1 + 수수료율)
+				const totalAmount = Math.floor(availableAmount / (1 + FEE_RATE));
+				const quantity = totalAmount / currentPrice;
+				const fee = Math.floor(totalAmount * FEE_RATE);
+
 				buyQuantity.value = quantity.toFixed(8);
-				buyTotal.innerText = total.toLocaleString() + ' 원';
+				buyTotal.innerText = totalAmount.toLocaleString() + ' 원';
 				if(buyFee) buyFee.innerText = fee.toLocaleString() + ' 원';
-				if(buyTotalWithFee) buyTotalWithFee.innerText = (total + fee).toLocaleString() + ' 원';
+				if(buyTotalWithFee) buyTotalWithFee.innerText = (totalAmount + fee).toLocaleString() + ' 원';
 				document.getElementById('buy_quantity_display').innerText = quantity.toFixed(8);
 			}
 		});

@@ -28,7 +28,7 @@ CREATE TABLE users (
 CREATE TABLE assets (
     asset_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '자산 고유 번호',
     user_id INT NOT NULL COMMENT '회원 번호',
-    krw_balance DECIMAL(15,2) DEFAULT 10000000.00 COMMENT '보유 원화',
+    krw_balance DECIMAL(15,2) DEFAULT 100000000.00 COMMENT '보유 원화',
     total_invested DECIMAL(15,2) DEFAULT 0 COMMENT '총 투자금액',
     realized_profit DECIMAL(15,2) DEFAULT 0 COMMENT '누적 실현 손익',
     profit_rate DECIMAL(10,4) DEFAULT 0 COMMENT '수익률 (%)',

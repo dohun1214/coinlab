@@ -33,21 +33,35 @@
     <!-- 요약 카드 -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white border border-slate-200 rounded-xl p-5">
-            <div class="text-sm text-slate-500 mb-1">초기 예산</div>
+            <div class="text-sm text-slate-500 mb-1">현재 자산</div>
             <div class="text-2xl font-bold text-slate-900">
-                <fmt:formatNumber value="${sessionScope.loginUser.initialBalance}" pattern="#,###"/> 원
+                <fmt:formatNumber value="${sessionScope.userAssets.krwBalance}" pattern="#,###"/> 원
             </div>
-            <p class="text-xs text-slate-400 mt-2">입금/출금 기록 기준 (샘플 값)</p>
+            <p class="text-xs text-slate-400 mt-2">보유 중인 원화 잔액</p>
         </div>
         <div class="bg-white border border-slate-200 rounded-xl p-5">
             <div class="text-sm text-slate-500 mb-1">총 손익</div>
-            <div class="text-2xl font-bold text-emerald-600">+0 원</div>
-            <p class="text-xs text-slate-400 mt-2">추가 연동 시 자동 계산됩니다.</p>
+            <c:choose>
+                <c:when test="${sessionScope.userAssets.realizedProfit >= 0}">
+                    <div class="text-2xl font-bold text-emerald-600"><fmt:formatNumber value="${sessionScope.userAssets.realizedProfit}" pattern="#,###"/>원</div>
+                </c:when>
+                <c:otherwise>
+                    <div class="text-2xl font-bold text-red-600"><fmt:formatNumber value="${sessionScope.userAssets.realizedProfit}" pattern="#,###"/>원</div>
+                </c:otherwise>
+            </c:choose>
+            <p class="text-xs text-slate-400 mt-2">누적 실현 손익</p>
         </div>
         <div class="bg-white border border-slate-200 rounded-xl p-5">
             <div class="text-sm text-slate-500 mb-1">수익률</div>
-            <div class="text-2xl font-bold text-emerald-600">+0.00%</div>
-            <p class="text-xs text-slate-400 mt-2">보유 자산 기준</p>
+            <c:choose>
+                <c:when test="${sessionScope.userAssets.profitRate >= 0}">
+                    <div class="text-2xl font-bold text-emerald-600"><fmt:formatNumber value="${sessionScope.userAssets.profitRate}" pattern="#,###.##"/> %</div>
+                </c:when>
+                <c:otherwise>
+                    <div class="text-2xl font-bold text-red-600"><fmt:formatNumber value="${sessionScope.userAssets.profitRate}" pattern="#,###.##"/> %</div>
+                </c:otherwise>
+            </c:choose>
+            <p class="text-xs text-slate-400 mt-2">총 투자 대비 수익률</p>
         </div>
     </section>
 
