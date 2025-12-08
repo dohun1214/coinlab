@@ -72,22 +72,9 @@ CREATE TABLE transactions (
     INDEX idx_type (transaction_type)
 ) COMMENT '거래 내역';
 
--- ============================================
--- 5. 관심 코인 테이블 (watchlist)
--- ============================================
-CREATE TABLE watchlist (
-    watchlist_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '관심 목록 고유 번호',
-    user_id INT NOT NULL COMMENT '회원 번호',
-    coin_symbol VARCHAR(20) NOT NULL COMMENT '코인 심볼',
-    coin_name VARCHAR(50) COMMENT '코인 이름',
-    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '추가 시간',
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    UNIQUE KEY unique_user_watchlist (user_id, coin_symbol),
-    INDEX idx_user (user_id)
-) COMMENT '관심 코인';
 
 -- ============================================
--- 6. 게시판 테이블 (board)
+-- 5. 게시판 테이블 (board)
 -- ============================================
 CREATE TABLE board (
     post_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '게시글 고유 번호',
@@ -103,7 +90,7 @@ CREATE TABLE board (
 ) COMMENT '게시판';
 
 -- ============================================
--- 7. 댓글 테이블 (comments)
+-- 6. 댓글 테이블 (comments)
 -- ============================================
 CREATE TABLE comments (
     comment_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '댓글 고유 번호',
@@ -120,7 +107,7 @@ CREATE TABLE comments (
 
 
 -- ============================================
--- 8. 게시글 좋아요 (board_likes)
+-- 7. 게시글 좋아요 (board_likes)
 -- ============================================
 CREATE TABLE board_likes (
     like_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '좋아요 고유 번호',
