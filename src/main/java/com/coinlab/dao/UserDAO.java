@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import com.coinlab.dto.Ranking;
 import com.coinlab.dto.User;
 import com.coinlab.util.DBUtil;
 
@@ -377,6 +378,47 @@ public class UserDAO {
 		}
 
 		return null;
+	}
+
+	// 수익률 기준 랭킹 조회
+	public ArrayList<Ranking> getRankingByProfitRate(int limit) {
+		String sql = "SELECT u.user_id, u.username, u.nickname, a.profit_rate, a.realized_profit, a.krw_balance "
+				+ "FROM users u "
+				+ "JOIN assets a ON u.user_id = a.user_id "
+				+ "ORDER BY a.profit_rate DESC "
+				+ "LIMIT ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Ranking> rankingList = new ArrayList<>();
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, limit);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				Ranking ranking = new Ranking();
+				ranking.setUserId(rs.getInt("user_id"));
+				ranking.setUsername(rs.getString("username"));
+				ranking.setNickname(rs.getString("nickname"));
+				ranking.setProfitRate(rs.getDouble("profit_rate"));
+				ranking.setRealizedProfit(rs.getDouble("realized_profit"));
+				ranking.setKrwBalance(rs.getDouble("krw_balance"));
+				rankingList.add(ranking);
+			}
+			return rankingList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				DBUtil.close(conn, pstmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return rankingList;
 	}
 
 }
