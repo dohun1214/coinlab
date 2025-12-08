@@ -139,6 +139,85 @@ public class BoardDAO {
 		}
 	}
 
+	public Board getPostById(int postId) throws SQLException {
+		String sql = "SELECT b.post_id, b.user_id, b.title, b.content, b.view_count, b.created_at, b.updated_at, u.nickname "
+				+ "FROM board b JOIN users u ON u.user_id = b.user_id WHERE b.post_id = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, postId);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				Board post = new Board();
+				post.setPostId(rs.getInt("post_id"));
+				post.setUserId(rs.getInt("user_id"));
+				post.setTitle(rs.getString("title"));
+				post.setContent(rs.getString("content"));
+				post.setViewCount(rs.getInt("view_count"));
+				post.setCreatedAt(rs.getTimestamp("created_at"));
+				post.setUpdatedAt(rs.getTimestamp("updated_at"));
+				post.setNickname(rs.getString("nickname"));
+				return post;
+			}
+			return null;
+		} finally {
+			DBUtil.close(conn, pstmt, rs);
+		}
+	}
+
+	public boolean updatePost(int postId, int userId, String title, String content, boolean isAdmin) throws SQLException {
+		String sql = isAdmin ? "UPDATE board SET title = ?, content = ?, updated_at = ? WHERE post_id = ?"
+				: "UPDATE board SET title = ?, content = ?, updated_at = ? WHERE post_id = ? AND user_id = ?";
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, title);
+			pstmt.setString(2, content);
+			pstmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+			pstmt.setInt(4, postId);
+			if (!isAdmin) {
+				pstmt.setInt(5, userId);
+			}
+
+			int affected = pstmt.executeUpdate();
+			return affected > 0;
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+	}
+
+	public boolean updateComment(int commentId, int userId, String content, boolean isAdmin) throws SQLException {
+		String sql = isAdmin ? "UPDATE comments SET content = ? WHERE comment_id = ?"
+				: "UPDATE comments SET content = ? WHERE comment_id = ? AND user_id = ?";
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, content);
+			pstmt.setInt(2, commentId);
+			if (!isAdmin) {
+				pstmt.setInt(3, userId);
+			}
+
+			int affected = pstmt.executeUpdate();
+			return affected > 0;
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+	}
+
 	public boolean toggleLike(int postId, int userId) throws SQLException {
 		String selectSql = "SELECT like_id FROM board_likes WHERE post_id = ? AND user_id = ?";
 		String insertSql = "INSERT INTO board_likes (post_id, user_id, created_at) VALUES (?, ?, ?)";

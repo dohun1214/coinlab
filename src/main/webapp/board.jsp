@@ -51,12 +51,17 @@
                         <p class="text-xs text-slate-500"><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm" /></p>
                     </div>
                     <c:if test="${sessionScope.loginUser.userId == post.userId or sessionScope.loginUser.role eq 'ADMIN'}">
-                        <form action="<c:url value='/board/delete.do' />" method="post" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
-                            <input type="hidden" name="postId" value="${post.postId}">
-                            <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-700 px-3 py-1 rounded-full border border-red-200 bg-red-50">
-                                삭제
-                            </button>
-                        </form>
+                        <div class="flex gap-2">
+                            <a href="<c:url value='/board/write.do?postId=${post.postId}' />" class="text-xs font-semibold text-blue-600 hover:text-blue-700 px-3 py-1 rounded-full border border-blue-200 bg-blue-50">
+                                수정
+                            </a>
+                            <form action="<c:url value='/board/delete.do' />" method="post" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
+                                <input type="hidden" name="postId" value="${post.postId}">
+                                <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-700 px-3 py-1 rounded-full border border-red-200 bg-red-50">
+                                    삭제
+                                </button>
+                            </form>
+                        </div>
                     </c:if>
                 </div>
 
@@ -100,23 +105,45 @@
                 <c:if test="${not empty post.comments}">
                     <div class="mt-4 space-y-3">
                         <c:forEach var="comment" items="${post.comments}">
-                            <div class="border border-slate-100 rounded-xl px-4 py-3">
+                            <div class="border border-slate-100 rounded-xl px-4 py-3" id="comment-${comment.commentId}">
                                 <div class="flex items-center justify-between gap-2 text-sm">
                                     <div class="flex items-center gap-2">
                                         <span class="font-semibold"><c:out value="${comment.nickname}" /></span>
                                         <span class="text-xs text-slate-500"><fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm" /></span>
                                     </div>
                                     <c:if test="${sessionScope.loginUser.userId == comment.userId or sessionScope.loginUser.role eq 'ADMIN'}">
-                                        <form action="<c:url value='/board/comment/delete.do' />" method="post" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
-                                            <input type="hidden" name="commentId" value="${comment.commentId}">
-                                            <input type="hidden" name="postId" value="${post.postId}">
-                                            <button type="submit" class="text-[11px] font-semibold text-red-600 hover:text-red-700 px-2 py-1 rounded-full border border-red-200 bg-red-50">
-                                                삭제
+                                        <div class="flex gap-2">
+                                            <button onclick="editComment(${comment.commentId}, ${post.postId})" class="text-[11px] font-semibold text-blue-600 hover:text-blue-700 px-2 py-1 rounded-full border border-blue-200 bg-blue-50">
+                                                수정
                                             </button>
-                                        </form>
+                                            <form action="<c:url value='/board/comment/delete.do' />" method="post" onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                                                <input type="hidden" name="commentId" value="${comment.commentId}">
+                                                <input type="hidden" name="postId" value="${post.postId}">
+                                                <button type="submit" class="text-[11px] font-semibold text-red-600 hover:text-red-700 px-2 py-1 rounded-full border border-red-200 bg-red-50">
+                                                    삭제
+                                                </button>
+                                            </form>
+                                        </div>
                                     </c:if>
                                 </div>
-                                <p class="mt-2 text-sm text-slate-700 whitespace-pre-line"><c:out value="${comment.content}" /></p>
+                                <p class="mt-2 text-sm text-slate-700 whitespace-pre-line comment-content"><c:out value="${comment.content}" /></p>
+                                <form action="<c:url value='/board/comment/update.do' />" method="post" class="mt-2 hidden comment-edit-form">
+                                    <input type="hidden" name="commentId" value="${comment.commentId}">
+                                    <input type="hidden" name="postId" value="${post.postId}">
+                                    <div class="flex items-start gap-2">
+                                        <textarea name="content" rows="2" required
+                                                  class="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                  placeholder="댓글을 입력하세요"><c:out value="${comment.content}" /></textarea>
+                                        <div class="flex flex-col gap-2">
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700">
+                                                저장
+                                            </button>
+                                            <button type="button" onclick="cancelEditComment(${comment.commentId})" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                                                취소
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </c:forEach>
                     </div>
@@ -147,5 +174,25 @@
         </c:forEach>
     </section>
 </main>
+
+<script>
+function editComment(commentId, postId) {
+    const commentDiv = document.getElementById('comment-' + commentId);
+    const contentP = commentDiv.querySelector('.comment-content');
+    const editForm = commentDiv.querySelector('.comment-edit-form');
+
+    contentP.classList.add('hidden');
+    editForm.classList.remove('hidden');
+}
+
+function cancelEditComment(commentId) {
+    const commentDiv = document.getElementById('comment-' + commentId);
+    const contentP = commentDiv.querySelector('.comment-content');
+    const editForm = commentDiv.querySelector('.comment-edit-form');
+
+    contentP.classList.remove('hidden');
+    editForm.classList.add('hidden');
+}
+</script>
 </body>
 </html>
