@@ -23,7 +23,7 @@
             <h1 class="text-2xl font-bold">내 정보 수정</h1>
             <p class="text-sm text-slate-500">현재 비밀번호를 입력하고 변경사항을 저장하세요.</p>
         </div>
-        <a href="mypage.jsp" class="px-4 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold hover:bg-slate-50">
+        <a href="mypage.do" class="px-4 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold hover:bg-slate-50">
             마이페이지로 돌아가기
         </a>
     </div>
@@ -66,7 +66,7 @@
             </div>
 
             <div class="flex justify-end gap-2 pt-2">
-                <a href="mypage.jsp" class="px-4 py-2 rounded-lg border border-slate-300 text-sm bg-white">취소</a>
+                <a href="mypage.do" class="px-4 py-2 rounded-lg border border-slate-300 text-sm bg-white">취소</a>
                 <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700">
                     저장
                 </button>
