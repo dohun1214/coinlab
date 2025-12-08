@@ -95,6 +95,109 @@
             <p class="mt-4 text-sm text-emerald-600">${requestScope.successMsg}</p>
         </c:if>
     </section>
+
+    <!-- 보유 코인 -->
+    <section class="bg-white border border-slate-200 rounded-xl p-6">
+        <h2 class="text-lg font-semibold mb-4">보유 코인</h2>
+        <c:if test="${empty holdings}">
+            <div class="text-center py-8 text-slate-500 text-sm">
+                현재 보유 중인 코인이 없습니다.
+            </div>
+        </c:if>
+        <c:if test="${not empty holdings}">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-slate-600">
+                            <th class="text-left py-3 px-2">코인</th>
+                            <th class="text-right py-3 px-2">보유 수량</th>
+                            <th class="text-right py-3 px-2">평균 매수가</th>
+                            <th class="text-right py-3 px-2">매수 금액</th>
+                            <th class="text-left py-3 px-2">최근 업데이트</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="holding" items="${holdings}">
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="py-3 px-2 font-semibold text-blue-600">${holding.coinSymbol}</td>
+                                <td class="py-3 px-2 text-right">
+                                    <fmt:formatNumber value="${holding.quantity}" pattern="#,##0.########" />
+                                </td>
+                                <td class="py-3 px-2 text-right">
+                                    <fmt:formatNumber value="${holding.avgBuyPrice}" pattern="#,###" /> 원
+                                </td>
+                                <td class="py-3 px-2 text-right font-semibold">
+                                    <fmt:formatNumber value="${holding.quantity * holding.avgBuyPrice}" pattern="#,###" /> 원
+                                </td>
+                                <td class="py-3 px-2 text-slate-600">
+                                    <fmt:formatDate value="${holding.updatedAt}" pattern="yyyy-MM-dd HH:mm" />
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </c:if>
+    </section>
+
+    <!-- 거래 내역 -->
+    <section class="bg-white border border-slate-200 rounded-xl p-6">
+        <h2 class="text-lg font-semibold mb-4">거래 내역</h2>
+        <c:if test="${empty transactions}">
+            <div class="text-center py-8 text-slate-500 text-sm">
+                아직 거래 내역이 없습니다.
+            </div>
+        </c:if>
+        <c:if test="${not empty transactions}">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-slate-600">
+                            <th class="text-left py-3 px-2">거래일시</th>
+                            <th class="text-left py-3 px-2">코인</th>
+                            <th class="text-center py-3 px-2">구분</th>
+                            <th class="text-right py-3 px-2">수량</th>
+                            <th class="text-right py-3 px-2">가격</th>
+                            <th class="text-right py-3 px-2">거래금액</th>
+                            <th class="text-right py-3 px-2">수수료</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="tx" items="${transactions}">
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="py-3 px-2 text-slate-600">
+                                    <fmt:formatDate value="${tx.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" />
+                                </td>
+                                <td class="py-3 px-2 font-semibold">${tx.coinSymbol}</td>
+                                <td class="py-3 px-2 text-center">
+                                    <c:choose>
+                                        <c:when test="${tx.transactionType == 'BUY'}">
+                                            <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-red-100 text-red-700">매수</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-700">매도</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="py-3 px-2 text-right">
+                                    <fmt:formatNumber value="${tx.quantity}" pattern="#,##0.########" />
+                                </td>
+                                <td class="py-3 px-2 text-right">
+                                    <fmt:formatNumber value="${tx.price}" pattern="#,###" /> 원
+                                </td>
+                                <td class="py-3 px-2 text-right font-semibold">
+                                    <fmt:formatNumber value="${tx.totalAmount}" pattern="#,###" /> 원
+                                </td>
+                                <td class="py-3 px-2 text-right text-slate-500">
+                                    <fmt:formatNumber value="${tx.fee}" pattern="#,###" /> 원
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </c:if>
+    </section>
 </main>
 </body>
 </html>
