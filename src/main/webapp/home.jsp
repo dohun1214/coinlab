@@ -172,7 +172,7 @@
                         <th class="px-6 py-3 text-left font-semibold text-slate-600 text-xs">코인명</th>
                         <th class="px-6 py-3 text-right font-semibold text-slate-600 text-xs">현재가</th>
                         <th class="px-6 py-3 text-right font-semibold text-slate-600 text-xs">전일대비</th>
-                        <th class="px-6 py-3 text-right font-semibold text-slate-600 text-xs">시가총액</th>
+                        <th class="px-6 py-3 text-right font-semibold text-slate-600 text-xs">거래대금</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -180,51 +180,51 @@
                         <td class="px-6 py-4 text-blue-600 font-semibold">1</td>
                         <td class="px-6 py-4">
                             <div class="font-semibold text-slate-900">비트코인</div>
-                            <div class="text-xs text-slate-500">BTC/KRW</div>
+                            <div class="text-xs text-slate-500">KRW-BTC</div>
                         </td>
-                        <td class="px-6 py-4 text-right font-semibold text-slate-900">147,000,000</td>
-                        <td class="px-6 py-4 text-right font-bold text-blue-600">-2.85%</td>
-                        <td class="px-6 py-4 text-right text-slate-600">2,818조</td>
+                        <td id="current-price-1" class="px-6 py-4 text-right font-semibold text-slate-900">-</td>
+                        <td id="change-rate-1" class="px-6 py-4 text-right font-bold text-slate-600">-</td>
+                        <td id="volume-1" class="px-6 py-4 text-right text-slate-600">-</td>
                     </tr>
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4 text-blue-600 font-semibold">2</td>
                         <td class="px-6 py-4">
                             <div class="font-semibold text-slate-900">이더리움</div>
-                            <div class="text-xs text-slate-500">ETH/KRW</div>
+                            <div class="text-xs text-slate-500">KRW-ETH</div>
                         </td>
-                        <td class="px-6 py-4 text-right font-semibold text-slate-900">4,802,000</td>
-                        <td class="px-6 py-4 text-right font-bold text-blue-600">-2.14%</td>
-                        <td class="px-6 py-4 text-right text-slate-600">557조</td>
+                        <td id="current-price-2" class="px-6 py-4 text-right font-semibold text-slate-900">-</td>
+                        <td id="change-rate-2" class="px-6 py-4 text-right font-bold text-slate-600">-</td>
+                        <td id="volume-2" class="px-6 py-4 text-right text-slate-600">-</td>
                     </tr>
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4 text-blue-600 font-semibold">3</td>
                         <td class="px-6 py-4">
                             <div class="font-semibold text-slate-900">테더</div>
-                            <div class="text-xs text-slate-500">USDT/KRW</div>
+                            <div class="text-xs text-slate-500">KRW-USDT</div>
                         </td>
-                        <td class="px-6 py-4 text-right font-semibold text-slate-900">1,516</td>
-                        <td class="px-6 py-4 text-right font-bold text-blue-600">-0.13%</td>
-                        <td class="px-6 py-4 text-right text-slate-600">268조</td>
+                        <td id="current-price-3" class="px-6 py-4 text-right font-semibold text-slate-900">-</td>
+                        <td id="change-rate-3" class="px-6 py-4 text-right font-bold text-slate-600">-</td>
+                        <td id="volume-3" class="px-6 py-4 text-right text-slate-600">-</td>
                     </tr>
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4 text-blue-600 font-semibold">4</td>
                         <td class="px-6 py-4">
                             <div class="font-semibold text-slate-900">리플</div>
-                            <div class="text-xs text-slate-500">XRP/KRW</div>
+                            <div class="text-xs text-slate-500">KRW-XRP</div>
                         </td>
-                        <td class="px-6 py-4 text-right font-semibold text-slate-900">3,476</td>
-                        <td class="px-6 py-4 text-right font-bold text-blue-600">-1.45%</td>
-                        <td class="px-6 py-4 text-right text-slate-600">202조</td>
+                        <td id="current-price-4" class="px-6 py-4 text-right font-semibold text-slate-900">-</td>
+                        <td id="change-rate-4" class="px-6 py-4 text-right font-bold text-slate-600">-</td>
+                        <td id="volume-4" class="px-6 py-4 text-right text-slate-600">-</td>
                     </tr>
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4 text-blue-600 font-semibold">5</td>
                         <td class="px-6 py-4">
                             <div class="font-semibold text-slate-900">솔라나</div>
-                            <div class="text-xs text-slate-500">SOL/KRW</div>
+                            <div class="text-xs text-slate-500">KRW-SOL</div>
                         </td>
-                        <td class="px-6 py-4 text-right font-semibold text-slate-900">214,800</td>
-                        <td class="px-6 py-4 text-right font-bold text-blue-600">-2.27%</td>
-                        <td class="px-6 py-4 text-right text-slate-600">115조</td>
+                        <td id="current-price-5" class="px-6 py-4 text-right font-semibold text-slate-900">-</td>
+                        <td id="change-rate-5" class="px-6 py-4 text-right font-bold text-slate-600">-</td>
+                        <td id="volume-5" class="px-6 py-4 text-right text-slate-600">-</td>
                     </tr>
                 </tbody>
             </table>
@@ -238,6 +238,6 @@
     </section>
 
 </main>
-
+<script type="text/javascript" src="js/home.js"></script>
 </body>
 </html>
