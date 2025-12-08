@@ -27,7 +27,7 @@
                 <a href="<c:url value='/trade.jsp' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">거래</a>
                 <a href="<c:url value='/mypage.do' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">마이페이지</a>
                 <a href="<c:url value='/board.do' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">게시판</a>
-                <a href="<c:url value='/ranking.jsp' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">랭킹</a>
+                <a href="<c:url value='/ranking.do' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">랭킹</a>
                 <c:if test="${sessionScope.loginUser.role eq 'ADMIN'}">
                     <a href="<c:url value='/admin/users.do' />" class="text-gray-700 hover:text-blue-600 font-semibold text-base transition-colors">
                         관리자
