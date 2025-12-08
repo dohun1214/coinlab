@@ -14,7 +14,7 @@
 
 <main class="max-w-5xl mx-auto px-6 py-10 space-y-6">
     <div>
-        <h1 class="text-3xl font-bold">🏆 랭킹</h1>
+        <h1 class="text-3xl font-bold">랭킹</h1>
         <p class="text-sm text-slate-500 mt-1">수익률 기준 사용자 랭킹</p>
     </div>
 
@@ -41,20 +41,22 @@
                         <c:forEach var="ranking" items="${rankings}" varStatus="status">
                             <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors ${not empty sessionScope.loginUser and ranking.userId == sessionScope.loginUser.userId ? 'bg-blue-50' : ''}">
                                 <td class="py-4 px-6">
-                                    <c:choose>
-                                        <c:when test="${status.index == 0}">
-                                            <span class="text-2xl">🥇</span>
-                                        </c:when>
-                                        <c:when test="${status.index == 1}">
-                                            <span class="text-2xl">🥈</span>
-                                        </c:when>
-                                        <c:when test="${status.index == 2}">
-                                            <span class="text-2xl">🥉</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <span class="text-sm font-semibold text-slate-600">${status.index + 1}</span>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <div class="flex items-center gap-2">
+                                        <c:choose>
+                                            <c:when test="${status.index == 0}">
+                                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 text-white text-sm font-bold">1</span>
+                                            </c:when>
+                                            <c:when test="${status.index == 1}">
+                                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 text-white text-sm font-bold">2</span>
+                                            </c:when>
+                                            <c:when test="${status.index == 2}">
+                                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 text-white text-sm font-bold">3</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="text-sm font-semibold text-slate-600">${status.index + 1}</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
                                 </td>
                                 <td class="py-4 px-6">
                                     <div class="flex items-center gap-2">

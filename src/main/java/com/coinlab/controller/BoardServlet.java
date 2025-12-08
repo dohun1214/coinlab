@@ -23,13 +23,15 @@ public class BoardServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		if (session == null || session.getAttribute("loginUser") == null) {
-			response.sendRedirect("login.jsp");
-			return;
+		User loginUser = null;
+		Integer userId = null;
+
+		if (session != null && session.getAttribute("loginUser") != null) {
+			loginUser = (User) session.getAttribute("loginUser");
+			userId = loginUser.getUserId();
 		}
 
-		User loginUser = (User) session.getAttribute("loginUser");
-		List<Board> posts = boardDAO.getPosts(loginUser.getUserId());
+		List<Board> posts = boardDAO.getPosts(userId);
 
 		for (Board post : posts) {
 			List<Comments> comments = boardDAO.getComments(post.getPostId());
