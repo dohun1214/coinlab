@@ -8,7 +8,6 @@ public class User {
 	private String password;
 	private String email;
 	private String nickname;
-	private String profileImage;
 	private String role;
 	private Timestamp createdAt;
 	private Timestamp lastLogin;
@@ -16,22 +15,20 @@ public class User {
 	public User() {
 	}
 
-	public User(String username, String password, String email, String nickname, String profileImage) {
+	public User(String username, String password, String email, String nickname) {
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.nickname = nickname;
-		this.profileImage = profileImage;
 	}
 
-	public User(int userId, String username, String password, String email, String nickname, String profileImage,
+	public User(int userId, String username, String password, String email, String nickname,
 			String role, Timestamp createdAt, Timestamp lastLogin) {
 		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.nickname = nickname;
-		this.profileImage = profileImage;
 		this.role = role;
 		this.createdAt = createdAt;
 		this.lastLogin = lastLogin;
@@ -77,14 +74,6 @@ public class User {
 		this.nickname = nickname;
 	}
 
-	public String getProfileImage() {
-		return profileImage;
-	}
-
-	public void setProfileImage(String profileImage) {
-		this.profileImage = profileImage;
-	}
-
 	public String getRole() {
 		return role;
 	}
@@ -112,7 +101,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", email=" + email
-				+ ", nickname=" + nickname + ", profileImage=" + profileImage + ", role=" + role + ", createdAt="
+				+ ", nickname=" + nickname + ", role=" + role + ", createdAt="
 				+ createdAt + ", lastLogin=" + lastLogin + "]";
 	}
 

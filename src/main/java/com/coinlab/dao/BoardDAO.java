@@ -17,7 +17,7 @@ public class BoardDAO {
 	public List<Board> getPosts(Integer viewerUserId) {
 		List<Board> posts = new ArrayList<>();
 		String sql = "SELECT b.post_id, b.user_id, b.title, b.content, b.view_count, b.created_at, b.updated_at, "
-				+ "u.nickname, u.profile_image, "
+				+ "u.nickname, "
 				+ "(SELECT COUNT(*) FROM comments c WHERE c.post_id = b.post_id) AS comment_count, "
 				+ "(SELECT COUNT(*) FROM board_likes bl WHERE bl.post_id = b.post_id) AS like_count, "
 				+ "(SELECT COUNT(*) FROM board_likes bl2 WHERE bl2.post_id = b.post_id AND bl2.user_id = ?) AS liked_by_me "
@@ -45,7 +45,6 @@ public class BoardDAO {
 				post.setCreatedAt(rs.getTimestamp("created_at"));
 				post.setUpdatedAt(rs.getTimestamp("updated_at"));
 				post.setNickname(rs.getString("nickname"));
-				post.setProfileImage(rs.getString("profile_image"));
 				post.setCommentCount(rs.getInt("comment_count"));
 				post.setLikeCount(rs.getInt("like_count"));
 				post.setLikedByMe(rs.getInt("liked_by_me") > 0);
@@ -66,7 +65,7 @@ public class BoardDAO {
 
 	public List<Comments> getComments(int postId) {
 		List<Comments> comments = new ArrayList<>();
-		String sql = "SELECT c.comment_id, c.post_id, c.user_id, c.content, c.created_at, u.nickname, u.profile_image "
+		String sql = "SELECT c.comment_id, c.post_id, c.user_id, c.content, c.created_at, u.nickname "
 				+ "FROM comments c JOIN users u ON u.user_id = c.user_id "
 				+ "WHERE c.post_id = ? ORDER BY c.created_at ASC";
 
@@ -88,7 +87,6 @@ public class BoardDAO {
 				comment.setContent(rs.getString("content"));
 				comment.setCreatedAt(rs.getTimestamp("created_at"));
 				comment.setNickname(rs.getString("nickname"));
-				comment.setProfileImage(rs.getString("profile_image"));
 				comments.add(comment);
 			}
 		} catch (SQLException e) {

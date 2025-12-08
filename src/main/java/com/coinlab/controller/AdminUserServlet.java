@@ -104,7 +104,6 @@ public class AdminUserServlet extends HttpServlet {
 				newUser.setPassword(password.trim());
 				newUser.setEmail(email.trim());
 				newUser.setNickname(nickname.trim());
-				newUser.setProfileImage("/images/default-profile.png");
 				int userId = userDAO.insertUser(newUser);
 				if (userId > 0) {
 					assetsDAO.insertInitialAssets(userId);

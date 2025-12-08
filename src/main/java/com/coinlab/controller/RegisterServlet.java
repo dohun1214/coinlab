@@ -22,15 +22,14 @@ public class RegisterServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		String email = request.getParameter("email");
 		String nickname = request.getParameter("nickname");
-		String profileImage = null;
-		
-		User user = new User(username, password, email, nickname, profileImage);
+
+		User user = new User(username, password, email, nickname);
 		UserDAO userDAO = new UserDAO();
 		int userId = userDAO.insertUser(user);
-		
+
 		AssetsDAO assetsDAO = new AssetsDAO();
 		assetsDAO.insertInitialAssets(userId);
-		
+
 		response.sendRedirect("login.jsp");
 	}
 

@@ -14,7 +14,6 @@ CREATE TABLE users (
     password VARCHAR(100) NOT NULL COMMENT '비밀번호 (평문 저장)',
     email VARCHAR(100) UNIQUE NOT NULL COMMENT '이메일',
     nickname VARCHAR(50) COMMENT '닉네임',
-    profile_image VARCHAR(255) DEFAULT '/images/default-profile.png' COMMENT '프로필 이미지 경로',
     role ENUM('USER', 'ADMIN') DEFAULT 'USER' COMMENT '권한 (일반회원/관리자)',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '가입일',
     last_login TIMESTAMP NULL COMMENT '마지막 로그인',

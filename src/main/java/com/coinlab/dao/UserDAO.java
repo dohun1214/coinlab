@@ -32,7 +32,6 @@ public class UserDAO {
 				user.setPassword(rs.getString("password"));
 				user.setEmail(rs.getString("email"));
 				user.setNickname(rs.getString("nickname"));
-				user.setProfileImage(rs.getString("profile_image"));
 				user.setRole(rs.getString("role"));
 				user.setCreatedAt(rs.getTimestamp("created_at"));
 				user.setLastLogin(rs.getTimestamp("last_login"));
@@ -65,7 +64,7 @@ public class UserDAO {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				userList.add(new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("password"),
-						rs.getString("email"), rs.getString("nickname"), rs.getString("profile_image"),
+						rs.getString("email"), rs.getString("nickname"),
 						rs.getString("role"), rs.getTimestamp("created_at"),
 						rs.getTimestamp("last_login")));
 			}
@@ -312,7 +311,7 @@ public class UserDAO {
 
 	// 회원 가입
 	public int insertUser(User user) {
-		String sql = "insert into users(username,password,email,nickname,profile_image,role,last_login) values(?,?,?,?,?,?,?)";
+		String sql = "insert into users(username,password,email,nickname,role,last_login) values(?,?,?,?,?,?)";
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -324,10 +323,8 @@ public class UserDAO {
 			pstmt.setString(2, user.getPassword());
 			pstmt.setString(3, user.getEmail());
 			pstmt.setString(4, user.getNickname());
-			String profileImage = user.getProfileImage() != null ? user.getProfileImage() : "/images/default-profile.png";
-			pstmt.setString(5, profileImage);
-			pstmt.setString(6, "USER");
-			pstmt.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+			pstmt.setString(5, "USER");
+			pstmt.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
 
 			pstmt.executeUpdate();
 
@@ -366,7 +363,7 @@ public class UserDAO {
 
 			if (rs.next()) {
 				User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
-						rs.getString(6), rs.getString(7), rs.getTimestamp(8), rs.getTimestamp(9));
+						rs.getString(6), rs.getTimestamp(7), rs.getTimestamp(8));
 				return user;
 			}
 		} catch (SQLException e) {

@@ -39,14 +39,9 @@
         <c:forEach var="post" items="${posts}">
             <article id="post-${post.postId}" class="bg-white border border-slate-200 rounded-2xl shadow-sm px-6 py-5">
                 <div class="flex items-start justify-between gap-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full overflow-hidden bg-slate-200">
-                            <img src="<c:url value='${empty post.profileImage ? "/images/default-profile.png" : post.profileImage}' />" alt="프로필" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold"><c:out value="${post.nickname}" /></p>
-                            <p class="text-xs text-slate-500"><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm" /></p>
-                        </div>
+                    <div>
+                        <p class="text-sm font-semibold"><c:out value="${post.nickname}" /></p>
+                        <p class="text-xs text-slate-500"><fmt:formatDate value="${post.createdAt}" pattern="yyyy-MM-dd HH:mm" /></p>
                     </div>
                     <c:if test="${sessionScope.loginUser.userId == post.userId or sessionScope.loginUser.role eq 'ADMIN'}">
                         <form action="<c:url value='/board/delete.do' />" method="post" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
@@ -89,9 +84,6 @@
                             <div class="border border-slate-100 rounded-xl px-4 py-3">
                                 <div class="flex items-center justify-between gap-2 text-sm">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-6 h-6 rounded-full overflow-hidden bg-slate-200">
-                                            <img src="<c:url value='${empty comment.profileImage ? "/images/default-profile.png" : comment.profileImage}' />" alt="프로필" class="w-full h-full object-cover">
-                                        </div>
                                         <span class="font-semibold"><c:out value="${comment.nickname}" /></span>
                                         <span class="text-xs text-slate-500"><fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm" /></span>
                                     </div>

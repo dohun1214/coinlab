@@ -15,7 +15,6 @@ public class Board {
 
 	// joined user info
 	private String nickname;
-	private String profileImage;
 
 	// aggregated info
 	private int likeCount;
@@ -86,14 +85,6 @@ public class Board {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
-	}
-
-	public String getProfileImage() {
-		return profileImage;
-	}
-
-	public void setProfileImage(String profileImage) {
-		this.profileImage = profileImage;
 	}
 
 	public int getLikeCount() {

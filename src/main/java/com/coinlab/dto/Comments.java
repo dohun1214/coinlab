@@ -10,7 +10,6 @@ public class Comments {
 	private Timestamp createdAt;
 
 	private String nickname;
-	private String profileImage;
 
 	public int getCommentId() {
 		return commentId;
@@ -58,13 +57,5 @@ public class Comments {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
-	}
-
-	public String getProfileImage() {
-		return profileImage;
-	}
-
-	public void setProfileImage(String profileImage) {
-		this.profileImage = profileImage;
 	}
 }
