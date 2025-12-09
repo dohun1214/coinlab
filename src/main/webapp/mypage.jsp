@@ -198,6 +198,26 @@
             </div>
         </c:if>
     </section>
+
+    <!-- 회원 탈퇴 -->
+    <section class="bg-white border border-red-200 rounded-xl p-6">
+        <h2 class="text-lg font-semibold text-red-600 mb-2">회원 탈퇴</h2>
+        <p class="text-sm text-slate-600 mb-4">
+            계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
+        </p>
+        <ul class="text-sm text-slate-600 mb-4 space-y-1 list-disc list-inside">
+            <li>보유 중인 코인 및 원화 잔액 정보</li>
+            <li>거래 내역 및 투자 기록</li>
+            <li>게시글 및 댓글</li>
+        </ul>
+        <form action="<c:url value='/deleteAccount.do' />" method="post"
+              onsubmit="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
+            <button type="submit"
+                    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors">
+                회원 탈퇴
+            </button>
+        </form>
+    </section>
 </main>
 </body>
 </html>

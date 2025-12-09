@@ -222,7 +222,7 @@ public class AssetsDAO {
 	}
 
 	public void updateProfitRate(int userId) {
-		String sql = "update assets set profit_rate = (realized_profit / 100000000) * 100 where user_id = ?";
+		String sql = "update assets set profit_rate = CASE WHEN total_invested > 0 THEN (realized_profit / total_invested) * 100 ELSE 0 END where user_id = ?";
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 

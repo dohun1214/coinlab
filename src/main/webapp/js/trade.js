@@ -229,21 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	let coin = {
-		'KRW-BTC': {},
-		'KRW-ETH': {}
-	}
-
-	ws.onmessage = (event) => {
-
-
-		let data = JSON.parse(event.data)
-
-		coin[data.code] = data
-
-
+	// UI 업데이트 함수
+	function updateUI() {
 		for (const key of Object.keys(coin)) {
-			if (code == key) {
+			if (code == key && coin[code].tradePrice) {
 				// 헤더 정보 업데이트
 				const coinSymbol = code.split("-")[1];
 				document.getElementById('coin_title').innerText = `${getCoinName(code)} (${coinSymbol})`;
@@ -301,6 +290,47 @@ document.addEventListener('DOMContentLoaded', () => {
 				break
 			}
 		}
+	}
+
+	// localStorage에서 캐시된 코인 데이터 불러오기
+	let coin = {};
+	try {
+		const cachedCoin = localStorage.getItem('coinData');
+		if (cachedCoin) {
+			coin = JSON.parse(cachedCoin);
+			console.log('캐시된 코인 데이터 로드:', Object.keys(coin).length, '개');
+			// 캐시된 데이터로 초기 UI 업데이트
+			updateUI();
+		} else {
+			coin = {
+				'KRW-BTC': {},
+				'KRW-ETH': {}
+			};
+		}
+	} catch (e) {
+		console.error('캐시 로드 실패:', e);
+		coin = {
+			'KRW-BTC': {},
+			'KRW-ETH': {}
+		};
+	}
+
+	ws.onmessage = (event) => {
+
+
+		let data = JSON.parse(event.data)
+
+		coin[data.code] = data
+
+		// localStorage에 저장 (캐시)
+		try {
+			localStorage.setItem('coinData', JSON.stringify(coin));
+		} catch (e) {
+			console.error('캐시 저장 실패:', e);
+		}
+
+		// UI 업데이트
+		updateUI();
 
 		document.querySelectorAll('.price').forEach((d) => {
 			if (d.dataset.code == data.code) {

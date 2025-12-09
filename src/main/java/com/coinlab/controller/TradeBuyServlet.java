@@ -23,7 +23,7 @@ public class TradeBuyServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String coinSymbol = request.getParameter("coinSymbol").split("-")[1];
-		int price =Integer.parseInt(request.getParameter("price"));
+		double price = Double.parseDouble(request.getParameter("price"));
 		double quantity = Double.parseDouble(request.getParameter("quantity"));
 		double totalPrice = price * quantity;
 		double fee = totalPrice * FEE_RATE;
