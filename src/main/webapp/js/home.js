@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
-	const ws = new WebSocket('ws://localhost:8080/CoinLab/ticker')
+	const ws = new WebSocket(`ws://${window.location.host}/CoinLab/ticker`);
 	ws.onopen = () => {
 		console.log('websocket 연결됨')
 	}

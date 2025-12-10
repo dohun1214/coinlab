@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	async function loadInitialData(code, type) {
 		candlestickSeries.setData([]);
 		try {
-			// Upbit API에서 최근 200개의 데이터 가져오기
-			const response = await fetch(`https://api.upbit.com/v1/candles/${type}?market=${code}&count=200`);
+			// 프록시 서버를 통해 Upbit API에서 최근 200개의 데이터 가져오기
+			const response = await fetch(`trade/upbit-proxy.do?type=${type}&market=${code}&count=200`);
 			const data = await response.json();
 
 			// 데이터를 차트 형식으로 변환 (시간 순서대로 정렬)
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 	// WebSocket 연결
-	const ws = new WebSocket('ws://localhost:8080/CoinLab/ticker');
+	const ws = new WebSocket(`ws://${window.location.host}/CoinLab/ticker`);
 
 	ws.onopen = () => {
 		console.log('WebSocket 연결됨');
@@ -351,19 +351,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	let ws2 = connectNewWebSocket(code)
 	function connectNewWebSocket(code) {
-		let ws2 = new WebSocket('wss://api.upbit.com/websocket/v1')
+		// 서버의 차트 WebSocket 프록시에 연결
+		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+		const wsUrl = `${protocol}//${window.location.host}/CoinLab/chart`;
+		let ws2 = new WebSocket(wsUrl);
 
 		ws2.onopen = () => {
 			console.log('ws2 연결 성공')
-			ws2.send(JSON.stringify([
-				{ "ticket": "test" },
-				{ "type": `${getType(type)}`, "codes": [`${code}`] }
-			]))
+			// 서버 프록시에 구독 정보 전송
+			ws2.send(JSON.stringify({
+				code: code,
+				type: getType(type)
+			}))
 		}
 
 
-		ws2.onmessage = async (event) => {
-			let text = await event.data.text()
+		ws2.onmessage = (event) => {
+			let text = event.data;
 			/** @type {{type : string, code: string, opening_price: number, high_price : number, low_price : number, trade_price : number, timestamp : number}} */
 			let data = JSON.parse(text)
 
@@ -384,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 		ws2.onerror = (error) => {
-			console.error('ws2 에러' + error)
+			console.error('ws2 에러' + JSON.stringify(error))
 		}
 		return ws2
 	}
