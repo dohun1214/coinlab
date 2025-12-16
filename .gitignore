@@ -1,12 +1,18 @@
 # Eclipse specific files
 .metadata
-.settings/
-.project
-.classpath
 .factorypath
 .buildpath
 .target
 .tern-project
+
+# Keep these Eclipse files for easy import:
+# .project
+# .classpath
+# .settings/
+
+# Exclude user-specific Eclipse settings
+.settings/org.eclipse.core.resources.prefs
+.settings/org.eclipse.jdt.apt.core.prefs
 
 # Compiled class files
 *.class
@@ -43,10 +49,16 @@ desktop.ini
 
 # Java specific
 *.jar
-!WEB-INF/lib/*.jar
+# Include library jar files in WEB-INF/lib
+!**/WEB-INF/lib/*.jar
 hs_err_pid*
 
 # Temporary files
 *.tmp
 *.bak
 *.cache
+
+# Configuration files with sensitive data
+src/main/resources/db.properties
+*.properties
+!*.properties.example
