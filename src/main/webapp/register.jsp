@@ -150,9 +150,9 @@
 	<div class="flex-1 flex items-center justify-center py-10 px-5 pt-20">
 		<div class="bg-white rounded-3xl shadow-2xl p-12 w-full max-w-lg">
 		<!-- Logo -->
-		<div class="w-24 h-24 mx-auto mb-5 bg-white border-4 border-blue-600 rounded-full flex items-center justify-center shadow-lg">
+		<a href="<c:url value='/index.do' />" class="block w-24 h-24 mx-auto mb-5 bg-white border-4 border-blue-600 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity">
 			<img src="images/coinlab-logo.png" alt="CoinLab Logo" class="w-16 h-16 object-contain">
-		</div>
+		</a>
 
 		<!-- Title -->
 		<h1 class="text-3xl font-bold text-center text-gray-900 mb-2">CoinLab</h1>

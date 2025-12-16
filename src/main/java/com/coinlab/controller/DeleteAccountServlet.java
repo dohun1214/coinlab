@@ -43,35 +43,42 @@ public class DeleteAccountServlet extends HttpServlet {
 				pstmt.executeUpdate();
 			}
 
-			// 2. 게시글 삭제
-			String deletePostsSql = "DELETE FROM posts WHERE user_id = ?";
-			try (PreparedStatement pstmt = conn.prepareStatement(deletePostsSql)) {
+			// 2. 게시글 좋아요 삭제
+			String deleteBoardLikesSql = "DELETE FROM board_likes WHERE user_id = ?";
+			try (PreparedStatement pstmt = conn.prepareStatement(deleteBoardLikesSql)) {
 				pstmt.setInt(1, userId);
 				pstmt.executeUpdate();
 			}
 
-			// 3. 거래 내역 삭제
+			// 3. 게시글 삭제
+			String deleteBoardSql = "DELETE FROM board WHERE user_id = ?";
+			try (PreparedStatement pstmt = conn.prepareStatement(deleteBoardSql)) {
+				pstmt.setInt(1, userId);
+				pstmt.executeUpdate();
+			}
+
+			// 4. 거래 내역 삭제
 			String deleteTransactionsSql = "DELETE FROM transactions WHERE user_id = ?";
 			try (PreparedStatement pstmt = conn.prepareStatement(deleteTransactionsSql)) {
 				pstmt.setInt(1, userId);
 				pstmt.executeUpdate();
 			}
 
-			// 4. 보유 코인 삭제
+			// 5. 보유 코인 삭제
 			String deleteHoldingsSql = "DELETE FROM holdings WHERE user_id = ?";
 			try (PreparedStatement pstmt = conn.prepareStatement(deleteHoldingsSql)) {
 				pstmt.setInt(1, userId);
 				pstmt.executeUpdate();
 			}
 
-			// 5. 자산 정보 삭제
+			// 6. 자산 정보 삭제
 			String deleteAssetsSql = "DELETE FROM assets WHERE user_id = ?";
 			try (PreparedStatement pstmt = conn.prepareStatement(deleteAssetsSql)) {
 				pstmt.setInt(1, userId);
 				pstmt.executeUpdate();
 			}
 
-			// 6. 사용자 삭제
+			// 7. 사용자 삭제
 			String deleteUserSql = "DELETE FROM users WHERE user_id = ?";
 			try (PreparedStatement pstmt = conn.prepareStatement(deleteUserSql)) {
 				pstmt.setInt(1, userId);
@@ -85,6 +92,7 @@ public class DeleteAccountServlet extends HttpServlet {
 
 			// 로그인 페이지로 리다이렉트
 			response.sendRedirect(request.getContextPath() + "/login.jsp?msg=accountDeleted");
+			return;
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -14,13 +14,20 @@
 	<div class="flex-1 flex items-center justify-center p-5 pt-20">
 		<div class="bg-white rounded-3xl shadow-2xl p-12 w-full max-w-md">
 		<!-- Logo -->
-		<div class="w-24 h-24 mx-auto mb-5 bg-white border-4 border-blue-600 rounded-full flex items-center justify-center shadow-lg">
+		<a href="<c:url value='/index.do' />" class="block w-24 h-24 mx-auto mb-5 bg-white border-4 border-blue-600 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity">
 			<img src="images/coinlab-logo.png" alt="CoinLab Logo" class="w-16 h-16 object-contain">
-		</div>
+		</a>
 
 		<!-- Title -->
 		<h1 class="text-3xl font-bold text-center text-gray-900 mb-2">CoinLab</h1>
 		<p class="text-center text-gray-600 text-sm mb-8">모의 투자로 안전하게 연습하세요</p>
+
+		<!-- Success Message -->
+		<c:if test="${param.msg == 'accountDeleted'}">
+			<div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 text-sm">
+				회원 탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.
+			</div>
+		</c:if>
 
 		<!-- Error Message -->
 		<c:if test="${not empty errorMsg}">

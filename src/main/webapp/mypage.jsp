@@ -208,7 +208,7 @@
         <ul class="text-sm text-slate-600 mb-4 space-y-1 list-disc list-inside">
             <li>보유 중인 코인 및 원화 잔액 정보</li>
             <li>거래 내역 및 투자 기록</li>
-            <li>게시글 및 댓글</li>
+            <li>게시글, 댓글 및 좋아요</li>
         </ul>
         <form action="<c:url value='/deleteAccount.do' />" method="post"
               onsubmit="return confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');">
