@@ -10,8 +10,9 @@
 <title>CoinLab - 로그인</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50 p-5">
-	<div class="bg-white rounded-3xl shadow-2xl p-12 w-full max-w-md">
+<body class="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-blue-50">
+	<div class="flex-1 flex items-center justify-center p-5 pt-20">
+		<div class="bg-white rounded-3xl shadow-2xl p-12 w-full max-w-md">
 		<!-- Logo -->
 		<div class="w-24 h-24 mx-auto mb-5 bg-white border-4 border-blue-600 rounded-full flex items-center justify-center shadow-lg">
 			<img src="images/coinlab-logo.png" alt="CoinLab Logo" class="w-16 h-16 object-contain">
@@ -55,6 +56,10 @@
 			계정이 없으신가요?
 			<a href="register.jsp" class="text-blue-600 font-semibold hover:text-blue-800 hover:underline transition-colors">회원가입</a>
 		</div>
+		</div>
 	</div>
+
+	<%@ include file="footer.jsp" %>
+
 </body>
 </html>

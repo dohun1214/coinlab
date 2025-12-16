@@ -12,7 +12,7 @@
 
 <%@ include file="header.jsp" %>
 
-<main class="max-w-5xl mx-auto px-6 py-10 space-y-6">
+<main class="max-w-5xl mx-auto px-6 py-10 space-y-6 min-h-[calc(100vh-400px)]">
     <div>
         <h1 class="text-3xl font-bold">랭킹</h1>
         <p class="text-sm text-slate-500 mt-1">수익률 기준 사용자 랭킹</p>
@@ -107,5 +107,8 @@
         </c:if>
     </section>
 </main>
+
+<%@ include file="footer.jsp" %>
+
 </body>
 </html>

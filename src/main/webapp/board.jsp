@@ -12,7 +12,7 @@
 
 <%@ include file="header.jsp" %>
 
-<main class="max-w-5xl mx-auto px-6 py-10 space-y-6">
+<main class="max-w-5xl mx-auto px-6 py-10 space-y-6 min-h-[calc(100vh-400px)]">
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-bold">게시판</h1>
@@ -194,5 +194,8 @@ function cancelEditComment(commentId) {
     editForm.classList.add('hidden');
 }
 </script>
+
+<%@ include file="footer.jsp" %>
+
 </body>
 </html>

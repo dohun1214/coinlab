@@ -13,11 +13,14 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color: #f8f9fa;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 
 .container {
 	display: flex;
-	min-height: calc(100vh - 80px);
+	flex: 1;
 	padding: 0;
 }
 
@@ -81,6 +84,11 @@ body {
 .trade-panel {
 	width: 100%;
 	margin: 0 auto;
+}
+
+footer {
+	margin-left: 320px;
+	flex-shrink: 0;
 }
 </style>
 <script
@@ -423,5 +431,8 @@ body {
 
 
 	<script type="text/javascript" src="js/trade.js"></script>
+
+<%@ include file="footer.jsp" %>
+
 </body>
 </html>
